@@ -3,7 +3,7 @@
  * Get messages for a conversation
  * 
  * POST /api/chat/messages/[conversationId]
- * Send a message to a conversation
+ * Send a message to a conversation (with content moderation)
  */
 
 import { NextRequest } from 'next/server';
@@ -11,7 +11,8 @@ import connectDB from '@/lib/db';
 import { Conversation, Message } from '@/models';
 import { requireAuth } from '@/lib/auth';
 import { validate, sendMessageSchema, paginationSchema } from '@/lib/validations';
-import { success, paginated, notFound, forbidden, handleError } from '@/lib/api-response';
+import { success, paginated, notFound, forbidden, handleError, error } from '@/lib/api-response';
+import { moderateContent, logModerationDecision } from '@/lib/content-moderation';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,6 +87,37 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const body = await request.json();
     const data = validate(sendMessageSchema, body);
+
+    // ========================================
+    // CONTENT MODERATION CHECK (for text messages)
+    // ========================================
+    if (data.type === 'text' && data.content) {
+      const moderationResult = await moderateContent(data.content);
+      
+      // Log the moderation decision
+      logModerationDecision(data.content, moderationResult, {
+        userId: currentUser._id.toString(),
+        postId: conversationId,
+      });
+      
+      // If content is flagged, reject the message
+      if (!moderationResult.approved) {
+        return error(
+          `Message rejected: ${moderationResult.reasons.join(', ')}`,
+          400,
+          {
+            code: 'CONTENT_MODERATION_FAILED',
+            flaggedCategories: moderationResult.reasons,
+          }
+        );
+      }
+      
+      // Use sanitized content if available
+      if (moderationResult.sanitizedContent) {
+        data.content = moderationResult.sanitizedContent;
+      }
+    }
+    // ========================================
 
     // Create message
     const message = await Message.create({

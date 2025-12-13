@@ -74,11 +74,16 @@ export function paginated<T>(
 /**
  * Send an error response
  */
-export function error(message: string, status: number = 400): NextResponse<ApiResponse> {
+export function error(
+  message: string, 
+  status: number = 400,
+  details?: Record<string, unknown>
+): NextResponse<ApiResponse> {
   return NextResponse.json(
     {
       success: false,
       error: message,
+      ...(details && { details }),
     },
     { status }
   );

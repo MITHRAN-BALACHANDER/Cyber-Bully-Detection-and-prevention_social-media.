@@ -1,6 +1,6 @@
 /**
  * POST /api/posts
- * Create a new post
+ * Create a new post (with content moderation)
  * 
  * GET /api/posts
  * Get posts with pagination (for discovery/public feed)
@@ -11,7 +11,8 @@ import connectDB from '@/lib/db';
 import { Post, Connection } from '@/models';
 import { requireAuth, getUserFromRequest } from '@/lib/auth';
 import { validate, createPostSchema, paginationSchema } from '@/lib/validations';
-import { success, paginated, handleError } from '@/lib/api-response';
+import { success, paginated, handleError, error } from '@/lib/api-response';
+import { moderateContent, logModerationDecision } from '@/lib/content-moderation';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +23,37 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const data = validate(createPostSchema, body);
+
+    // ========================================
+    // CONTENT MODERATION CHECK
+    // ========================================
+    if (data.content) {
+      const moderationResult = await moderateContent(data.content);
+      
+      // Log the moderation decision
+      logModerationDecision(data.content, moderationResult, {
+        userId: currentUser._id.toString(),
+      });
+      
+      // If content is flagged, reject the post
+      if (!moderationResult.approved) {
+        return error(
+          `Post rejected: ${moderationResult.reasons.join(', ')}`,
+          400,
+          {
+            code: 'CONTENT_MODERATION_FAILED',
+            flaggedCategories: moderationResult.reasons,
+            scores: moderationResult.scores,
+          }
+        );
+      }
+      
+      // Use sanitized content if available
+      if (moderationResult.sanitizedContent) {
+        data.content = moderationResult.sanitizedContent;
+      }
+    }
+    // ========================================
 
     const post = await Post.create({
       authorId: currentUser._id,

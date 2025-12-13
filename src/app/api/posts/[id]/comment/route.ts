@@ -1,6 +1,6 @@
 /**
  * POST /api/posts/[id]/comment
- * Add a comment to a post
+ * Add a comment to a post (with content moderation)
  * 
  * GET /api/posts/[id]/comment
  * Get comments for a post
@@ -11,7 +11,8 @@ import connectDB from '@/lib/db';
 import { Post } from '@/models';
 import { requireAuth, getUserFromRequest } from '@/lib/auth';
 import { validate, commentSchema, paginationSchema } from '@/lib/validations';
-import { success, notFound, paginated, handleError } from '@/lib/api-response';
+import { success, notFound, paginated, handleError, error } from '@/lib/api-response';
+import { moderateContent, logModerationDecision } from '@/lib/content-moderation';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,13 +29,40 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const body = await request.json();
     const { content } = validate(commentSchema, body);
 
+    // ========================================
+    // CONTENT MODERATION CHECK
+    // ========================================
+    const moderationResult = await moderateContent(content);
+    
+    // Log the moderation decision
+    logModerationDecision(content, moderationResult, {
+      userId: currentUser._id.toString(),
+      postId: id,
+    });
+    
+    // If content is flagged, reject the comment
+    if (!moderationResult.approved) {
+      return error(
+        `Comment rejected: ${moderationResult.reasons.join(', ')}`,
+        400,
+        {
+          code: 'CONTENT_MODERATION_FAILED',
+          flaggedCategories: moderationResult.reasons,
+          scores: moderationResult.scores,
+        }
+      );
+    }
+    // ========================================
+
     const post = await Post.findById(id);
 
     if (!post) {
       return notFound('Post not found');
     }
 
-    const comment = await post.addComment(currentUser._id.toString(), content);
+    // Use sanitized content if available (profanity masked)
+    const finalContent = moderationResult.sanitizedContent || content;
+    const comment = await post.addComment(currentUser._id.toString(), finalContent);
 
     // Populate author info for the new comment
     await post.populate('comments.authorId', 'name username avatar');
