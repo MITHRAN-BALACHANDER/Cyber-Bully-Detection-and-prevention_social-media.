@@ -57,9 +57,25 @@ export default function PostPage({ params }: PostPageProps) {
         body: JSON.stringify({ content }),
       });
 
-      if (!response.ok) throw new Error('Failed to add comment');
-
       const data = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = data.error || 'Failed to add comment';
+        const errorData = data.data || {};
+        
+        if (errorData.code === 'ACCOUNT_LOCKED') {
+          const hours = Math.floor(errorData.remainingMinutes / 60);
+          const minutes = errorData.remainingMinutes % 60;
+          throw new Error(`Your account is locked for ${hours}h ${minutes}m due to multiple violations.`);
+        }
+        
+        if (errorData.code === 'CONTENT_MODERATION_FAILED') {
+          const violationMsg = `${errorMessage} (${errorData.dailyViolationCount || 0}/3 violations today)`;
+          throw new Error(violationMsg);
+        }
+        
+        throw new Error(errorMessage);
+      }
       
       if (data.success && post) {
         setPost({

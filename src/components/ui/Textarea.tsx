@@ -48,15 +48,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={textareaRef}
           id={inputId}
           className={cn(
-            'w-full px-3 py-2 rounded-lg border',
+            'w-full px-4 py-3 rounded-xl border bg-white',
             'text-gray-900 placeholder:text-gray-400',
-            'transition-colors duration-200',
-            'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+            'transition-all duration-200',
+            'focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500',
             'resize-none',
             error
-              ? 'border-error focus:ring-error'
-              : 'border-gray-300 hover:border-gray-400',
-            props.disabled && 'bg-gray-100 cursor-not-allowed',
+              ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500'
+              : 'border-gray-200 hover:border-gray-300',
+            props.disabled && 'bg-gray-50 cursor-not-allowed opacity-60',
             className
           )}
           {...props}

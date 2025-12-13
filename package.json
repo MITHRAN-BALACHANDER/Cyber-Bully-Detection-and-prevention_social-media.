@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "next lint",
     "socket": "cross-env NODE_ENV=development ts-node --project tsconfig.server.json src/server/socket-server.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run socket\""
+    "dev:all": "concurrently \"npm run dev\" \"npm run socket\"",
+    "seed": "ts-node --project tsconfig.server.json scripts/seed-database.ts",
+    "migrate:streak": "ts-node --project tsconfig.server.json scripts/migrate-streak-fields.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

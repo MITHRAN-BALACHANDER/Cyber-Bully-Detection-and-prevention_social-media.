@@ -117,6 +117,26 @@ const UserSchema = new Schema<IUserDocument>(
     lastSeen: {
       type: Date,
     },
+    // Streak system
+    streak: {
+      currentStreak: { type: Number, default: 0 },
+      longestStreak: { type: Number, default: 0 },
+      lastStreakUpdate: { type: Date, default: null },
+    },
+    // Violation tracking
+    violations: {
+      dailyCount: { type: Number, default: 0 },
+      totalCount: { type: Number, default: 0 },
+      lastViolationDate: { type: Date, default: null },
+      consecutiveViolationDays: { type: Number, default: 0 },
+    },
+    // Account lock
+    accountLock: {
+      isLocked: { type: Boolean, default: false },
+      lockUntil: { type: Date, default: null },
+      lockCount: { type: Number, default: 0 },
+      lockReason: { type: String, default: null },
+    },
   },
   {
     timestamps: true,

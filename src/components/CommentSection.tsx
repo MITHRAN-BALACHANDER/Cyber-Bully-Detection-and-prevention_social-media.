@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { IComment } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
 import Image from 'next/image';
+import { AlertCircle, Lock, X } from 'lucide-react';
 
 interface CommentSectionProps {
   postId: string;
@@ -17,6 +18,7 @@ export default function CommentSection({ postId, comments: initialComments, onAd
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [localComments, setLocalComments] = useState<IComment[]>(initialComments || []);
+  const [error, setError] = useState<string | null>(null);
 
   // Update local comments when initialComments changes
   useEffect(() => {
@@ -28,6 +30,7 @@ export default function CommentSection({ postId, comments: initialComments, onAd
     if (!content.trim() || isSubmitting || !user) return;
 
     setIsSubmitting(true);
+    setError(null); // Clear any previous errors
     
     // Create optimistic comment
     const optimisticComment: IComment = {
@@ -53,6 +56,10 @@ export default function CommentSection({ postId, comments: initialComments, onAd
       // Remove optimistic comment on error
       setLocalComments(prev => prev.filter(c => c._id !== optimisticComment._id));
       setContent(commentContent); // Restore the content
+      
+      // Display error message in UI
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add comment';
+      setError(errorMessage);
       console.error('Failed to add comment:', error);
     } finally {
       setIsSubmitting(false);
@@ -61,6 +68,39 @@ export default function CommentSection({ postId, comments: initialComments, onAd
 
   return (
     <div className="px-4 pb-4 space-y-4">
+      {/* Error Message */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`flex items-start gap-3 p-4 rounded-xl border-2 ${
+              error.includes('locked') 
+                ? 'bg-red-50 border-red-300 text-red-900'
+                : error.includes('violation')
+                ? 'bg-yellow-50 border-yellow-300 text-yellow-900'
+                : 'bg-red-50 border-red-300 text-red-900'
+            }`}
+          >
+            {error.includes('locked') ? (
+              <Lock className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            ) : (
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            )}
+            <div className="flex-1">
+              <p className="font-medium text-sm">{error}</p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="flex-shrink-0 hover:opacity-70 transition-opacity"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Comment Form */}
       <form onSubmit={handleSubmit} className="flex gap-2">
         <div className="flex-shrink-0">

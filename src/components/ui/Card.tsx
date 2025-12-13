@@ -15,8 +15,8 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 const variantClasses = {
   default: 'bg-white',
-  bordered: 'bg-white border border-surface-border',
-  elevated: 'bg-white shadow-md',
+  bordered: 'bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200',
+  elevated: 'bg-white shadow-md hover:shadow-lg transition-shadow duration-200',
 };
 
 const paddingClasses = {

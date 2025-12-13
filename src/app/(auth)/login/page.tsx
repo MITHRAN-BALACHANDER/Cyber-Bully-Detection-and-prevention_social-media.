@@ -30,23 +30,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="text-center mb-8">
-        <Link href="/" className="text-3xl font-bold text-primary-600">
-          SocialHub
+    <div className="w-full max-w-md mx-auto">
+      <div className="text-center mb-10">
+        <Link href="/" className="inline-flex items-center gap-3 group">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200">
+            <span className="text-white font-bold text-2xl">S</span>
+          </div>
+          <span className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
+            Social
+          </span>
         </Link>
-        <h2 className="mt-6 text-2xl font-bold text-gray-900">
+        <h2 className="mt-8 text-3xl font-bold text-gray-900">
           Welcome back
         </h2>
-        <p className="mt-2 text-gray-600">
-          Sign in to your account to continue
+        <p className="mt-3 text-gray-600 text-lg">
+          Sign in to continue your journey
         </p>
       </div>
 
-      <Card>
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <Card className="shadow-xl">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-3 bg-error/10 border border-error/20 rounded-lg text-error text-sm">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
               {error}
             </div>
           )}

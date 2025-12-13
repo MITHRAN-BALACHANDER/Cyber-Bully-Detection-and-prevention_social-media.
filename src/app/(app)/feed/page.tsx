@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { PostCard, MediaGrid, CreatePost, Card } from '@/components';
 import { useAuthStore } from '@/store';
+import { cn } from '@/lib/utils';
 import type { PopulatedPost, PopulatedMedia } from '@/types';
 
 export default function FeedPage() {
@@ -119,9 +120,29 @@ export default function FeedPage() {
         body: JSON.stringify({ content }),
       });
 
-      if (!response.ok) throw new Error('Failed to add comment');
-
       const data = await response.json();
+
+      if (!response.ok) {
+        // Show detailed error message from API
+        const errorMessage = data.error || 'Failed to add comment';
+        const errorData = data.data || {};
+        
+        // Check if account is locked
+        if (errorData.code === 'ACCOUNT_LOCKED') {
+          const hours = Math.floor(errorData.remainingMinutes / 60);
+          const minutes = errorData.remainingMinutes % 60;
+          throw new Error(`Your account is locked for ${hours}h ${minutes}m due to multiple violations.`);
+        }
+        
+        // Check if it's a moderation violation
+        if (errorData.code === 'CONTENT_MODERATION_FAILED') {
+          const violationMsg = `${errorMessage} (${errorData.dailyViolationCount || 0}/3 violations today)`;
+          throw new Error(violationMsg);
+        }
+        
+        throw new Error(errorMessage);
+      }
+
       const comment = data.data?.comment;
       
       if (comment) {
@@ -145,26 +166,29 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Create Post */}
       <CreatePost onSuccess={handlePostCreated} />
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6">
-        {(['all', 'posts', 'media'] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === f
-                ? 'bg-primary-600 text-white'
-                : 'bg-surface-card text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
-          </button>
-        ))}
-      </div>
+      <Card className="mb-6 p-2">
+        <div className="flex gap-2">
+          {(['all', 'posts', 'media'] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={cn(
+                'px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex-1',
+                filter === f
+                  ? 'bg-primary-600 text-white shadow-md'
+                  : 'text-gray-600 hover:bg-gray-100'
+              )}
+            >
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+            </button>
+          ))}
+        </div>
+      </Card>
 
       {/* Feed Items */}
       <div className="space-y-4">

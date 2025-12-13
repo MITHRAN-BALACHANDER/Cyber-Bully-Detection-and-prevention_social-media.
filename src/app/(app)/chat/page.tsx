@@ -127,26 +127,26 @@ export default function ChatPage() {
   });
 
   return (
-    <div className="flex h-[calc(100vh-4rem)]">
+    <div className="flex h-[calc(100vh-4rem)] bg-gray-50">
       {/* Conversation List */}
       <div className={cn(
-        'w-full md:w-80 lg:w-96 border-r border-surface-border flex flex-col',
+        'w-full md:w-80 lg:w-96 border-r border-gray-200 flex flex-col bg-white',
         selectedConversation && 'hidden md:flex'
       )}>
         {/* Header */}
-        <div className="p-4 border-b border-surface-border">
+        <div className="p-4 sm:p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold">Messages</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
             <button 
               onClick={() => router.push('/network?tab=connections')}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2.5 hover:bg-gray-100 rounded-xl transition-all duration-200"
               title="Start a new conversation"
             >
               <Plus className="w-5 h-5" />
             </button>
           </div>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Search conversations..."

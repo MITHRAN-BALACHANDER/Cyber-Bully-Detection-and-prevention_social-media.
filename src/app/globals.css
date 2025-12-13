@@ -3,16 +3,33 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --radius: 12px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
   * {
-    @apply border-surface-border;
+    @apply border-gray-200;
+  }
+
+  html {
+    @apply scroll-smooth;
   }
 
   body {
-    @apply bg-surface-background text-gray-900 antialiased;
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+    @apply outline-none ring-2 ring-primary-500/20 ring-offset-2;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
   }
 }
 
@@ -81,25 +98,44 @@
 
   /* Message bubble styling */
   .message-bubble {
-    @apply max-w-[70%] px-4 py-2 rounded-2xl break-words;
+    @apply max-w-[75%] px-4 py-2.5 rounded-2xl break-words shadow-sm;
   }
 
   .message-bubble.sent {
-    @apply bg-primary-600 text-white rounded-br-sm ml-auto;
+    @apply bg-primary-600 text-white rounded-br-md ml-auto;
   }
 
   .message-bubble.received {
-    @apply bg-surface-card text-gray-900 rounded-bl-sm mr-auto;
+    @apply bg-white border border-gray-200 text-gray-900 rounded-bl-md mr-auto;
   }
 
   /* Loading skeleton */
   .skeleton {
-    @apply animate-pulse bg-gray-200 rounded;
+    @apply animate-pulse bg-gray-200/60 rounded-lg;
   }
 
   /* Glass effect */
   .glass {
-    @apply bg-white/80 backdrop-blur-md;
+    @apply bg-white/90 backdrop-blur-xl border border-white/20 shadow-lg;
+  }
+
+  /* Smooth fade animations */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hover-lift {
+    @apply transition-all duration-200;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    @apply shadow-lg;
   }
 }
 

@@ -46,6 +46,23 @@ export interface IUser {
   education: IEducation[];
   isVerified: boolean;
   lastSeen?: Date;
+  streak?: {
+    currentStreak: number;
+    longestStreak: number;
+    lastStreakUpdate: Date | null;
+  };
+  violations?: {
+    dailyCount: number;
+    totalCount: number;
+    lastViolationDate: Date | null;
+    consecutiveViolationDays: number;
+  };
+  accountLock?: {
+    isLocked: boolean;
+    lockUntil: Date | null;
+    lockCount: number;
+    lockReason: string | null;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
