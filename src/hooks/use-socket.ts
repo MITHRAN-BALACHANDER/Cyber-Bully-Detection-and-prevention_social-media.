@@ -3,7 +3,7 @@
  * React hook for managing Socket.IO connection
  */
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { useAuthStore, useChatStore } from '@/store';
 import {
   connectSocket,
@@ -37,11 +37,13 @@ export function useSocket() {
   } = useChatStore();
   
   const cleanupRef = useRef<(() => void)[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   // Connect when authenticated
   useEffect(() => {
     if (!isAuthenticated || !user) {
       disconnectSocket();
+      setIsConnected(false);
       return;
     }
 
@@ -53,16 +55,46 @@ export function useSocket() {
       ?.split('=')[1];
 
     if (token) {
-      connectSocket(token);
+      const socket = connectSocket(token);
+      
+      // Listen for connection to set up event handlers
+      const handleConnect = () => {
+        console.log('Socket connected');
+        setIsConnected(true);
+      };
+      
+      const handleDisconnect = (reason: string) => {
+        console.log('Socket disconnected:', reason);
+        setIsConnected(false);
+      };
+      
+      socket.on('connect', handleConnect);
+      socket.on('disconnect', handleDisconnect);
+      
+      // If already connected, set state
+      if (socket.connected) {
+        setIsConnected(true);
+      }
+      
+      return () => {
+        socket.off('connect', handleConnect);
+        socket.off('disconnect', handleDisconnect);
+        disconnectSocket();
+        setIsConnected(false);
+      };
     }
 
     return () => {
       disconnectSocket();
+      setIsConnected(false);
     };
   }, [isAuthenticated, user]);
 
-  // Set up event listeners
+  // Set up event listeners when connected
   useEffect(() => {
+    // Only set up listeners when connected
+    if (!isConnected) return;
+    
     // Clean up previous listeners
     cleanupRef.current.forEach((cleanup) => cleanup());
     cleanupRef.current = [];
@@ -114,23 +146,11 @@ export function useSocket() {
       })
     );
 
-    // Connection handlers
-    cleanupRef.current.push(
-      onConnect(() => {
-        console.log('Socket connected');
-      })
-    );
-
-    cleanupRef.current.push(
-      onDisconnect((reason) => {
-        console.log('Socket disconnected:', reason);
-      })
-    );
-
     return () => {
       cleanupRef.current.forEach((cleanup) => cleanup());
     };
   }, [
+    isConnected,
     activeConversationId,
     addMessage,
     incrementUnread,

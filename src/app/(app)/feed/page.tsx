@@ -61,8 +61,7 @@ export default function FeedPage() {
   };
 
   const handleLike = async (postId: string) => {
-    // Refresh the specific post or entire feed
-    fetchFeed(1, true);
+    // Like is handled optimistically by PostCard, no need to refetch
   };
 
   const handleComment = async (postId: string) => {
@@ -76,23 +75,39 @@ export default function FeedPage() {
   const handleLikePost = async (id: string, type: 'post' | 'media') => {
     try {
       const endpoint = type === 'post' ? `/api/posts/${id}/like` : `/api/media/${id}/like`;
-      await fetch(endpoint, { method: 'POST' });
-      // Optimistically update the UI
-      setItems((prev) =>
-        prev.map((item) =>
-          item._id === id
-            ? {
-                ...item,
-                likes: item.likes?.includes(user?._id || '')
-                  ? item.likes.filter((id) => id !== user?._id)
-                  : [...(item.likes || []), user?._id || ''],
-              }
-            : item
-        )
-      );
+      const response = await fetch(endpoint, { method: 'POST', credentials: 'include' });
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update with actual server response
+        setItems((prev) =>
+          prev.map((item) =>
+            item._id === id
+              ? {
+                  ...item,
+                  isLiked: data.data.isLiked,
+                  likeCount: data.data.likeCount,
+                  likes: data.data.isLiked 
+                    ? [...(item.likes || []), user?._id || '']
+                    : (item.likes || []).filter((likeId) => likeId !== user?._id),
+                }
+              : item
+          )
+        );
+      }
     } catch (error) {
       console.error('Failed to like:', error);
     }
+  };
+
+  const handleEditPost = (postId: string, updatedPost: PopulatedPost) => {
+    setItems((prev) =>
+      prev.map((item) => (item._id === postId ? updatedPost : item))
+    );
+  };
+
+  const handleDeletePost = (postId: string) => {
+    setItems((prev) => prev.filter((item) => item._id !== postId));
   };
 
   const handleAddComment = async (postId: string, content: string) => {
@@ -106,20 +121,23 @@ export default function FeedPage() {
 
       if (!response.ok) throw new Error('Failed to add comment');
 
-      const { comment } = await response.json();
+      const data = await response.json();
+      const comment = data.data?.comment;
       
-      // Optimistically update the UI
-      setItems((prev) =>
-        prev.map((item) => {
-          if (item._id === postId && 'comments' in item) {
-            return {
-              ...item,
-              comments: [...(item.comments || []), comment],
-            };
-          }
-          return item;
-        })
-      );
+      if (comment) {
+        // Update the UI with the new comment
+        setItems((prev) =>
+          prev.map((item) => {
+            if (item._id === postId && 'comments' in item) {
+              return {
+                ...item,
+                comments: [...(item.comments || []), comment],
+              };
+            }
+            return item;
+          })
+        );
+      }
     } catch (error) {
       console.error('Failed to add comment:', error);
       throw error;
@@ -162,6 +180,8 @@ export default function FeedPage() {
                 post={item}
                 onLike={() => handleLikePost(item._id, 'post')}
                 onAddComment={handleAddComment}
+                onEdit={handleEditPost}
+                onDelete={handleDeletePost}
               />
             ) : (
               <Card className="p-0 overflow-hidden">

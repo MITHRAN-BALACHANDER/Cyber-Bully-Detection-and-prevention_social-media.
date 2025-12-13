@@ -2,13 +2,8 @@
  * GET /api/posts/[id]
  * Get a single post by ID
  * 
- * DELETE /api/posts/[id]
- * Delete a post (author only)
- */
-
-/**
- * GET /api/posts/[id]
- * Get a single post by ID
+ * PUT /api/posts/[id]
+ * Update a post (author only)
  * 
  * DELETE /api/posts/[id]
  * Delete a post (author only)
@@ -73,6 +68,51 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       isLiked: currentUser
         ? post.likes.some((id) => id.toString() === currentUser._id.toString())
         : false,
+      likeCount: post.likes.length,
+      commentCount: post.comments.length,
+    };
+
+    return success(postWithStatus);
+  } catch (err) {
+    return handleError(err);
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: RouteParams) {
+  try {
+    await connectDB();
+    const { id } = await params;
+    const currentUser = await requireAuth(request);
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return notFound('Post not found');
+    }
+
+    // Only author can edit
+    if (post.authorId.toString() !== currentUser._id.toString()) {
+      return forbidden('You can only edit your own posts');
+    }
+
+    const body = await request.json();
+    const { content, title, visibility, media } = body;
+
+    // Update fields if provided
+    if (content !== undefined) post.content = content;
+    if (title !== undefined) post.title = title;
+    if (visibility !== undefined) post.visibility = visibility;
+    if (media !== undefined) post.media = media;
+
+    await post.save();
+
+    // Populate author info
+    await post.populate('authorId', 'name username avatar headline');
+    await post.populate('comments.authorId', 'name username avatar');
+
+    const postWithStatus = {
+      ...post.toObject(),
+      isLiked: post.likes.some((likeId) => likeId.toString() === currentUser._id.toString()),
       likeCount: post.likes.length,
       commentCount: post.comments.length,
     };

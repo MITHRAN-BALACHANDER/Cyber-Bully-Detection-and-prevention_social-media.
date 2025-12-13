@@ -7,7 +7,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Image as ImageIcon, Paperclip, MoreVertical, Check, CheckCheck } from 'lucide-react';
+import { Send, Image as ImageIcon, Paperclip, MoreVertical, Check, CheckCheck, Ban, Flag, Trash2 } from 'lucide-react';
 import { Avatar, Button } from '@/components/ui';
 import { cn, formatTime, formatRelativeTime } from '@/lib/utils';
 import { useChatStore, useAuthStore } from '@/store';
@@ -25,9 +25,11 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuthStore();
   const { messages, typingUsers, onlineUsers, setMessages } = useChatStore();
@@ -141,6 +143,45 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
     {}
   );
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
+
+  const handleBlock = async () => {
+    if (!confirm(`Are you sure you want to block ${otherUser?.name}?`)) return;
+    
+    // TODO: Implement block API
+    alert(`${otherUser?.name} has been blocked`);
+    setShowMenu(false);
+  };
+
+  const handleReport = async () => {
+    // TODO: Implement report API
+    alert(`Reported ${otherUser?.name}. Our team will review this.`);
+    setShowMenu(false);
+  };
+
+  const handleDeleteConversation = async () => {
+    if (!confirm('Are you sure you want to delete this conversation?')) return;
+    
+    // TODO: Implement delete conversation API
+    alert('Conversation deleted');
+    setShowMenu(false);
+  };
+
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
@@ -165,9 +206,41 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
             </p>
           </div>
         </div>
-        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <MoreVertical className="w-5 h-5 text-gray-500" />
-        </button>
+        <div className="relative" ref={menuRef}>
+          <button 
+            onClick={() => setShowMenu(!showMenu)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <MoreVertical className="w-5 h-5 text-gray-500" />
+          </button>
+          
+          {showMenu && (
+            <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[180px]">
+              <button
+                onClick={handleBlock}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-50 text-gray-700"
+              >
+                <Ban className="w-4 h-4" />
+                Block {otherUser?.name?.split(' ')[0]}
+              </button>
+              <button
+                onClick={handleReport}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-50 text-gray-700"
+              >
+                <Flag className="w-4 h-4" />
+                Report
+              </button>
+              <hr className="border-gray-200" />
+              <button
+                onClick={handleDeleteConversation}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-50 text-red-600"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete conversation
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Messages */}
@@ -187,10 +260,18 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
 
             {/* Messages */}
             {msgs.map((msg, index) => {
-              const isOwn = msg.senderId.toString() === user?._id;
+              // Handle both populated senderId (object) and unpopulated (string)
+              const senderId = typeof msg.senderId === 'object' && msg.senderId !== null 
+                ? (msg.senderId as unknown as PublicUser)._id 
+                : msg.senderId?.toString();
+              const isOwn = senderId === user?._id;
+              const prevSenderId = msgs[index - 1]?.senderId;
+              const prevSenderIdStr = typeof prevSenderId === 'object' && prevSenderId !== null
+                ? (prevSenderId as unknown as PublicUser)._id
+                : prevSenderId?.toString();
               const showAvatar =
                 !isOwn &&
-                (index === 0 || msgs[index - 1]?.senderId !== msg.senderId);
+                (index === 0 || prevSenderIdStr !== senderId);
 
               return (
                 <motion.div

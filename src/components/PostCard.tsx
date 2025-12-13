@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -17,11 +17,16 @@ import {
   Globe,
   Users,
   Lock,
+  Edit2,
+  Trash2,
+  X,
+  Check,
 } from 'lucide-react';
-import { Avatar, Card, Button } from '@/components/ui';
+import { Avatar, Card, Button, Textarea } from '@/components/ui';
 import { cn, formatRelativeTime, formatCount } from '@/lib/utils';
 import type { PopulatedPost, PublicUser } from '@/types';
 import CommentSection from './CommentSection';
+import { useAuthStore } from '@/store';
 
 interface PostCardProps {
   post: PopulatedPost;
@@ -29,6 +34,8 @@ interface PostCardProps {
   onComment?: (postId: string) => void;
   onShare?: (postId: string) => void;
   onAddComment?: (postId: string, content: string) => Promise<void>;
+  onEdit?: (postId: string, updatedPost: PopulatedPost) => void;
+  onDelete?: (postId: string) => void;
 }
 
 const visibilityIcons = {
@@ -37,14 +44,96 @@ const visibilityIcons = {
   private: Lock,
 };
 
-export function PostCard({ post, onLike, onComment, onShare, onAddComment }: PostCardProps) {
+export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdit, onDelete }: PostCardProps) {
+  const { user } = useAuthStore();
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
-  const [likeCount, setLikeCount] = useState(post.likeCount || post.likes.length);
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? post.likes?.length ?? 0);
   const [showComments, setShowComments] = useState(false);
-  const [commentCount, setCommentCount] = useState(post.comments?.length || 0);
+  const [commentCount, setCommentCount] = useState(post.commentCount ?? post.comments?.length ?? 0);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const [editTitle, setEditTitle] = useState(post.title || '');
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [localComments, setLocalComments] = useState(post.comments || []);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const author = post.authorId as PublicUser;
   const VisibilityIcon = visibilityIcons[post.visibility];
+  const isAuthor = user?._id === author._id;
+
+  // Sync state with prop changes
+  useEffect(() => {
+    setIsLiked(post.isLiked || false);
+    setLikeCount(post.likeCount ?? post.likes?.length ?? 0);
+    setCommentCount(post.commentCount ?? post.comments?.length ?? 0);
+    setLocalComments(post.comments || []);
+    setEditContent(post.content);
+    setEditTitle(post.title || '');
+  }, [post]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
+
+  const handleEdit = async () => {
+    if (!editContent.trim()) return;
+    
+    setIsUpdating(true);
+    try {
+      const response = await fetch(`/api/posts/${post._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          content: editContent,
+          title: post.type === 'article' ? editTitle : undefined,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setIsEditing(false);
+          onEdit?.(post._id, data.data);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to edit post:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+    
+    try {
+      const response = await fetch(`/api/posts/${post._id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        onDelete?.(post._id);
+      }
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
 
   const handleLike = async () => {
     const previousState = isLiked;
@@ -109,20 +198,111 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment }: Pos
             </div>
           </div>
         </Link>
-        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <MoreHorizontal className="w-5 h-5 text-gray-500" />
-        </button>
+        <div className="relative" ref={menuRef}>
+          <button 
+            onClick={() => setShowMenu(!showMenu)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <MoreHorizontal className="w-5 h-5 text-gray-500" />
+          </button>
+          
+          {showMenu && (
+            <div className="absolute right-0 top-10 bg-white border border-surface-border rounded-lg shadow-lg z-20 min-w-[150px]">
+              {isAuthor && (
+                <>
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setShowMenu(false);
+                    }}
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-left hover:bg-gray-50"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Edit post
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleDelete();
+                      setShowMenu(false);
+                    }}
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-gray-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete post
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/post/${post._id}`);
+                  setShowMenu(false);
+                  alert('Link copied to clipboard!');
+                }}
+                className="flex items-center gap-2 w-full px-4 py-2 text-sm text-left hover:bg-gray-50"
+              >
+                <Share2 className="w-4 h-4" />
+                Copy link
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Article Title */}
-      {post.type === 'article' && post.title && (
-        <h2 className="text-xl font-bold text-gray-900 mb-2">{post.title}</h2>
+      {/* Edit Mode */}
+      {isEditing ? (
+        <div className="mb-3 space-y-3">
+          {post.type === 'article' && (
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              placeholder="Article title..."
+              className="w-full px-3 py-2 text-lg font-semibold border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          )}
+          <Textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            autoResize
+            className="min-h-[100px]"
+          />
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setIsEditing(false);
+                setEditContent(post.content);
+                setEditTitle(post.title || '');
+              }}
+            >
+              <X className="w-4 h-4 mr-1" />
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleEdit}
+              disabled={isUpdating || !editContent.trim()}
+              isLoading={isUpdating}
+            >
+              <Check className="w-4 h-4 mr-1" />
+              Save
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Article Title */}
+          {post.type === 'article' && post.title && (
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{post.title}</h2>
+          )}
+
+          {/* Content */}
+          <div className="mb-3">
+            <p className="text-gray-800 whitespace-pre-wrap">{post.content}</p>
+          </div>
+        </>
       )}
-
-      {/* Content */}
-      <div className="mb-3">
-        <p className="text-gray-800 whitespace-pre-wrap">{post.content}</p>
-      </div>
 
       {/* Media */}
       {post.media && post.media.length > 0 && (
@@ -250,7 +430,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment }: Pos
         >
           <CommentSection
             postId={post._id}
-            comments={post.comments || []}
+            comments={localComments}
             onAddComment={async (content: string) => {
               if (onAddComment) {
                 await onAddComment(post._id, content);

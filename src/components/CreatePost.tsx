@@ -7,7 +7,7 @@
 
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Image as ImageIcon, Video, FileText, X, Globe, Users, Lock } from 'lucide-react';
+import { Image as ImageIcon, Video, X, Globe, Users, Lock } from 'lucide-react';
 import { Avatar, Button, Card, Textarea } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store';
@@ -17,13 +17,6 @@ import { PostType, PostVisibility } from '@/types';
 interface CreatePostProps {
   onSuccess?: () => void;
 }
-
-const postTypes = [
-  { type: 'text' as PostType, icon: FileText, label: 'Text' },
-  { type: 'image' as PostType, icon: ImageIcon, label: 'Photo' },
-  { type: 'video' as PostType, icon: Video, label: 'Video' },
-  { type: 'article' as PostType, icon: FileText, label: 'Article' },
-];
 
 const visibilityOptions = [
   { value: 'public' as PostVisibility, icon: Globe, label: 'Anyone' },
@@ -36,29 +29,34 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
   const { createPost, isLoading } = usePosts();
   
   const [content, setContent] = useState('');
-  const [title, setTitle] = useState('');
-  const [postType, setPostType] = useState<PostType>('text');
   const [visibility, setVisibility] = useState<PostVisibility>('public');
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [mediaTypes, setMediaTypes] = useState<('image' | 'video')[]>([]);
   const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Automatically determine post type based on media
+  const getPostType = (): PostType => {
+    if (mediaUrls.length === 0) return 'text';
+    if (mediaTypes.some(t => t === 'video')) return 'video';
+    return 'image';
+  };
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
 
     const result = await createPost({
       content,
-      type: postType,
-      title: postType === 'article' ? title : undefined,
+      type: getPostType(),
       media: mediaUrls.length > 0 ? mediaUrls : undefined,
       visibility,
     });
 
     if (result.success) {
       setContent('');
-      setTitle('');
       setMediaUrls([]);
+      setMediaTypes([]);
       onSuccess?.();
     }
   };
@@ -69,14 +67,18 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
 
     // Create preview URLs for the uploaded files
     const newUrls: string[] = [];
+    const newTypes: ('image' | 'video')[] = [];
+    
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      const isVideo = file.type.startsWith('video/');
       const reader = new FileReader();
       
       await new Promise<void>((resolve) => {
         reader.onloadend = () => {
           if (reader.result) {
             newUrls.push(reader.result as string);
+            newTypes.push(isVideo ? 'video' : 'image');
           }
           resolve();
         };
@@ -85,10 +87,17 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
     }
     
     setMediaUrls([...mediaUrls, ...newUrls]);
+    setMediaTypes([...mediaTypes, ...newTypes]);
+    
+    // Reset file input
+    if (e.target) {
+      e.target.value = '';
+    }
   };
 
   const removeMedia = (index: number) => {
     setMediaUrls(mediaUrls.filter((_, i) => i !== index));
+    setMediaTypes(mediaTypes.filter((_, i) => i !== index));
   };
 
   if (!user) return null;
@@ -137,46 +146,9 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
         </div>
       </div>
 
-      {/* Post Type Selector */}
-      <div className="flex gap-2 mb-4">
-        {postTypes.map((type) => {
-          const Icon = type.icon;
-          return (
-            <button
-              key={type.type}
-              onClick={() => setPostType(type.type)}
-              className={cn(
-                'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
-                postType === type.type
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              )}
-            >
-              <Icon className="w-4 h-4" />
-              {type.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Article Title */}
-      {postType === 'article' && (
-        <input
-          type="text"
-          placeholder="Article title..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-3 py-2 mb-3 text-lg font-semibold border-b border-surface-border focus:outline-none focus:border-primary-500"
-        />
-      )}
-
       {/* Content Input */}
       <Textarea
-        placeholder={
-          postType === 'article'
-            ? 'Write your article...'
-            : "What's on your mind?"
-        }
+        placeholder="What's on your mind?"
         value={content}
         onChange={(e) => setContent(e.target.value)}
         autoResize
@@ -188,7 +160,11 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
         <div className="grid grid-cols-2 gap-2 mt-4">
           {mediaUrls.map((url, index) => (
             <div key={index} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
-              <img src={url} alt="" className="w-full h-full object-cover" />
+              {mediaTypes[index] === 'video' ? (
+                <video src={url} className="w-full h-full object-cover" controls />
+              ) : (
+                <img src={url} alt="" className="w-full h-full object-cover" />
+              )}
               <button
                 onClick={() => removeMedia(index)}
                 className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"

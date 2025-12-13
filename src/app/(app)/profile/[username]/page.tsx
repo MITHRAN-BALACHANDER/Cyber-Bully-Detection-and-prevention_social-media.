@@ -119,6 +119,10 @@ export default function ProfilePage() {
     }
   };
 
+  const handleEditProfile = () => {
+    router.push('/settings');
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
@@ -146,6 +150,7 @@ export default function ProfilePage() {
         connectionStatus={connectionStatus}
         onConnect={handleConnect}
         onMessage={handleMessage}
+        onEditProfile={handleEditProfile}
       />
 
       {/* Tabs */}

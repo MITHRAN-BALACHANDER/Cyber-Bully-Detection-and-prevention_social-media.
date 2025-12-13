@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { IComment } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
@@ -12,20 +12,47 @@ interface CommentSectionProps {
   onAddComment: (content: string) => Promise<void>;
 }
 
-export default function CommentSection({ postId, comments, onAddComment }: CommentSectionProps) {
+export default function CommentSection({ postId, comments: initialComments, onAddComment }: CommentSectionProps) {
   const { user } = useAuthStore();
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localComments, setLocalComments] = useState<IComment[]>(initialComments || []);
+
+  // Update local comments when initialComments changes
+  useEffect(() => {
+    setLocalComments(initialComments || []);
+  }, [initialComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim() || isSubmitting) return;
+    if (!content.trim() || isSubmitting || !user) return;
 
     setIsSubmitting(true);
+    
+    // Create optimistic comment
+    const optimisticComment: IComment = {
+      _id: `temp-${Date.now()}`,
+      authorId: {
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        avatar: user.avatar,
+      } as any,
+      content: content.trim(),
+      createdAt: new Date(),
+    };
+    
+    // Add optimistic comment immediately
+    setLocalComments(prev => [...prev, optimisticComment]);
+    const commentContent = content.trim();
+    setContent('');
+    
     try {
-      await onAddComment(content);
-      setContent('');
+      await onAddComment(commentContent);
     } catch (error) {
+      // Remove optimistic comment on error
+      setLocalComments(prev => prev.filter(c => c._id !== optimisticComment._id));
+      setContent(commentContent); // Restore the content
       console.error('Failed to add comment:', error);
     } finally {
       setIsSubmitting(false);
@@ -72,7 +99,7 @@ export default function CommentSection({ postId, comments, onAddComment }: Comme
 
       {/* Comments List */}
       <div className="space-y-3">
-        {comments.filter(comment => comment && comment._id).map((comment) => {
+        {localComments.filter(comment => comment && comment._id).map((comment) => {
           const author = typeof comment.authorId === 'string' ? null : comment.authorId;
           return (
             <motion.div
@@ -110,7 +137,7 @@ export default function CommentSection({ postId, comments, onAddComment }: Comme
             </motion.div>
           );
         })}
-        {comments.length === 0 && (
+        {localComments.length === 0 && (
           <p className="text-center text-gray-500 text-sm py-4">
             No comments yet. Be the first to comment!
           </p>
