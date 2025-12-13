@@ -1,21 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { 
   User, 
   Bell, 
   Lock, 
-  Eye, 
   Globe, 
   LogOut,
   Camera,
   Save,
-  X
 } from 'lucide-react';
 import { Card, Button, Input, Avatar } from '@/components/ui';
 import { useAuthStore } from '@/store';
 import { useRouter } from 'next/navigation';
+import type { LucideIcon } from 'lucide-react';
 
 type SettingsTab = 'profile' | 'privacy' | 'notifications' | 'account';
 
@@ -34,7 +32,7 @@ export default function SettingsPage() {
     website: user?.website || '',
   });
 
-  const tabs: { value: SettingsTab; label: string; icon: any }[] = [
+  const tabs: { value: SettingsTab; label: string; icon: LucideIcon }[] = [
     { value: 'profile', label: 'Profile', icon: User },
     { value: 'privacy', label: 'Privacy', icon: Lock },
     { value: 'notifications', label: 'Notifications', icon: Bell },
@@ -62,7 +60,7 @@ export default function SettingsPage() {
       } else {
         setMessage(data.error || 'Failed to update profile');
       }
-    } catch (error) {
+    } catch {
       setMessage('Failed to update profile');
     } finally {
       setIsLoading(false);

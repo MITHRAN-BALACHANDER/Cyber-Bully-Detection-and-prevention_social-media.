@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { IComment } from '@/types';
+import { IComment, PublicUser } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
 import Image from 'next/image';
 
@@ -12,7 +12,8 @@ interface CommentSectionProps {
   onAddComment: (content: string) => Promise<void>;
 }
 
-export default function CommentSection({ postId, comments: initialComments, onAddComment }: CommentSectionProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function CommentSection({ postId: _postId, comments: initialComments, onAddComment }: CommentSectionProps) {
   const { user } = useAuthStore();
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,7 +38,7 @@ export default function CommentSection({ postId, comments: initialComments, onAd
         name: user.name,
         username: user.username,
         avatar: user.avatar,
-      } as any,
+      } as PublicUser,
       content: content.trim(),
       createdAt: new Date(),
     };

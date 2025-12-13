@@ -12,7 +12,7 @@ type NetworkTab = 'connections' | 'pending' | 'suggestions';
 
 export default function NetworkPage() {
   const { user } = useAuthStore();
-  const { connect, acceptConnection, rejectConnection, removeConnection } = useNetwork();
+  const { connect, removeConnection } = useNetwork();
   const [activeTab, setActiveTab] = useState<NetworkTab>('connections');
   const [connections, setConnections] = useState<PopulatedConnection[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PopulatedConnection[]>([]);
@@ -54,7 +54,7 @@ export default function NetworkPage() {
         const connectedIds = new Set(
           connections.map((c) => {
             const other = c.requesterId === user?._id ? c.recipientId : c.requesterId;
-            return typeof other === 'string' ? other : (other as any)?._id as string;
+            return typeof other === 'string' ? other : (other as PublicUser)?._id as string;
           }).filter((id): id is string => !!id)
         );
         setSuggestions(

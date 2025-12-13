@@ -6,7 +6,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { Image as ImageIcon, Video, X, Globe, Users, Lock } from 'lucide-react';
 import { Avatar, Button, Card, Textarea } from '@/components/ui';
 import { cn } from '@/lib/utils';

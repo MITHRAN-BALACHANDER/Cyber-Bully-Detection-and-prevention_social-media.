@@ -53,7 +53,7 @@ export default function HomePage() {
                 href="/register"
                 className="px-8 py-4 bg-white text-primary-600 rounded-full font-semibold text-lg hover:bg-white/90 transition-colors text-center"
               >
-                Get Started — It's Free
+                Get Started — It&apos;s Free
               </Link>
             </div>
           </div>

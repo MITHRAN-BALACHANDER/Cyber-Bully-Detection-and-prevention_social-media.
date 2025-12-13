@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { ProfileCard, PostCard, MediaGrid, Card } from '@/components';
 import { useAuthStore } from '@/store';
-import type { User, PopulatedPost, PopulatedMedia, Connection } from '@/types';
+import type { User, PopulatedPost, PopulatedMedia } from '@/types';
 
 type ProfileTab = 'posts' | 'media' | 'about';
 
@@ -135,7 +135,7 @@ export default function ProfilePage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12 text-center">
         <h1 className="text-2xl font-bold text-gray-900">User not found</h1>
-        <p className="text-gray-600 mt-2">The user you're looking for doesn't exist.</p>
+        <p className="text-gray-600 mt-2">The user you&apos;re looking for doesn&apos;t exist.</p>
       </div>
     );
   }

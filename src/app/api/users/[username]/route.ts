@@ -32,7 +32,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Remove sensitive fields
-    const { passwordHash, ...publicUser } = user as typeof user & { passwordHash?: string };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _pw, ...publicUser } = user as typeof user & { passwordHash?: string };
 
     // If viewing own profile, include email
     if (currentUser && currentUser._id.toString() === publicUser._id.toString()) {
@@ -40,7 +41,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // For other users, remove email
-    const { email, ...safeUser } = publicUser;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { email: _email, ...safeUser } = publicUser;
 
     // Add connection status if logged in
     let connectionStatus = null;
@@ -97,7 +99,8 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return notFound('User not found');
     }
 
-    const { passwordHash, ...publicUser } = updatedUser as typeof updatedUser & { passwordHash?: string };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _pw, ...publicUser } = updatedUser as typeof updatedUser & { passwordHash?: string };
 
     return success(publicUser);
   } catch (err) {

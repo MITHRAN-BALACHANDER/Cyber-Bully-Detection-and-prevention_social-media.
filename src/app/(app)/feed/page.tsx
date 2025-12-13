@@ -60,15 +60,18 @@ export default function FeedPage() {
     fetchFeed(1, true);
   };
 
-  const handleLike = async (postId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleLike = async (_postId: string) => {
     // Like is handled optimistically by PostCard, no need to refetch
   };
 
-  const handleComment = async (postId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleComment = async (_postId: string) => {
     // Open comment section (already handled by PostCard)
   };
 
-  const handleShare = async (postId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleShare = async (_postId: string) => {
     // Share handled by PostCard
   };
 
@@ -188,7 +191,7 @@ export default function FeedPage() {
                 <div className="p-4 flex items-center gap-3">
                   <div className="w-10 h-10 bg-gray-200 rounded-full" />
                   <div>
-                    <p className="font-semibold">{(item as any).author?.name}</p>
+                    <p className="font-semibold">{(item as PopulatedMedia & { author?: { name: string } }).author?.name}</p>
                     <p className="text-sm text-gray-500">
                       Shared a photo
                     </p>
@@ -230,7 +233,7 @@ export default function FeedPage() {
         {/* End of Feed */}
         {!isLoading && items.length > 0 && !hasMore && (
           <p className="text-center text-gray-500 py-8">
-            You've reached the end of your feed
+            You&apos;ve reached the end of your feed
           </p>
         )}
       </div>

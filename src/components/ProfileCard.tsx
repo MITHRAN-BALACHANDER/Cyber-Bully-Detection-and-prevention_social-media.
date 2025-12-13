@@ -8,8 +8,8 @@
 import Link from 'next/link';
 import { Briefcase, MapPin, GraduationCap, Users, Edit2, Camera } from 'lucide-react';
 import { Avatar, Button, Card } from '@/components/ui';
-import { cn, formatCount } from '@/lib/utils';
-import type { User, Connection } from '@/types';
+import { formatCount } from '@/lib/utils';
+import type { User } from '@/types';
 
 interface ProfileCardProps {
   user: User;

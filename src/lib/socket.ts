@@ -205,7 +205,7 @@ export function onConnectError(callback: (error: Error) => void): () => void {
   return () => socket?.off('connect_error', callback);
 }
 
-export default {
+const socketClient = {
   getSocket,
   connectSocket,
   disconnectSocket,
@@ -227,3 +227,5 @@ export default {
   onDisconnect,
   onConnectError,
 };
+
+export default socketClient;

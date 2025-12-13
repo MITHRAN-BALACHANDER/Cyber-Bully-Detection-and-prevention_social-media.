@@ -405,7 +405,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
                   text: post.content.substring(0, 100),
                   url: `${window.location.origin}/post/${post._id}`,
                 });
-              } catch (err) {
+              } catch {
                 console.log('Share cancelled');
               }
             } else {

@@ -24,7 +24,8 @@ interface ChatWindowProps {
 export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowProps) {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);

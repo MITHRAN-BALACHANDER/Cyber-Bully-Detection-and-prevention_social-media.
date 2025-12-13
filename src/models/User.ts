@@ -121,7 +121,7 @@ const UserSchema = new Schema<IUserDocument>(
   {
     timestamps: true,
     toJSON: {
-      transform: (_, ret: any) => {
+      transform: (_, ret: Record<string, unknown>) => {
         delete ret.passwordHash;
         delete ret.__v;
         return ret;

@@ -21,8 +21,6 @@ import {
   onTypingStop,
   onUserOnline,
   onUserOffline,
-  onConnect,
-  onDisconnect,
 } from '@/lib/socket';
 
 export function useSocket() {

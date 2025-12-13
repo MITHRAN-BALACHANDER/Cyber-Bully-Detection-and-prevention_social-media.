@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components';
 import { useAuthStore } from '@/store';
 
@@ -11,7 +11,6 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
   const { isAuthenticated, isLoading, setUser, setLoading } = useAuthStore();
 
   // Check authentication status on mount

@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search as SearchIcon, Users, FileText, Image, X } from 'lucide-react';
-import { Input, Card, Button } from '@/components/ui';
+import { Card } from '@/components/ui';
 import { ConnectionCard } from '@/components';
-import type { PublicUser, PopulatedPost, PopulatedMedia } from '@/types';
-import Link from 'next/link';
+import type { PublicUser } from '@/types';
+import type { LucideIcon } from 'lucide-react';
 
 type SearchFilter = 'all' | 'users' | 'posts' | 'media';
 
@@ -46,7 +46,7 @@ export default function SearchPage() {
     return () => clearTimeout(searchTimeout);
   }, [query]);
 
-  const filters: { value: SearchFilter; label: string; icon: any }[] = [
+  const filters: { value: SearchFilter; label: string; icon: LucideIcon }[] = [
     { value: 'all', label: 'All', icon: SearchIcon },
     { value: 'users', label: 'People', icon: Users },
     { value: 'posts', label: 'Posts', icon: FileText },
@@ -124,7 +124,7 @@ export default function SearchPage() {
 
           {query && !isLoading && users.length === 0 && (
             <Card className="p-8 text-center">
-              <p className="text-gray-600">No results found for "{query}"</p>
+              <p className="text-gray-600">No results found for &quot;{query}&quot;</p>
             </Card>
           )}
 

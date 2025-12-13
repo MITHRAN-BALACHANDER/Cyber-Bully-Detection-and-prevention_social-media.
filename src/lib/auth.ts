@@ -152,10 +152,11 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     }
 
     // Return user without password hash
-    const { passwordHash, __v, ...authUser } = user as any;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _pw, __v: _v, ...authUser } = user as Record<string, unknown>;
     return {
       ...authUser,
-      _id: authUser._id.toString(),
+      _id: String(authUser._id),
     } as AuthUser;
   } catch {
     return null;
@@ -186,10 +187,11 @@ export async function getUserFromRequest(request: NextRequest): Promise<AuthUser
       return null;
     }
 
-    const { passwordHash, __v, ...authUser } = user as any;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _pw, __v: _v, ...authUser } = user as Record<string, unknown>;
     return {
       ...authUser,
-      _id: authUser._id.toString(),
+      _id: String(authUser._id),
     } as AuthUser;
   } catch {
     return null;

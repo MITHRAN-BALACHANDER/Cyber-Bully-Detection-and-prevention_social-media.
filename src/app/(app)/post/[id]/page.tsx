@@ -19,7 +19,7 @@ interface PostPageProps {
 export default function PostPage({ params }: PostPageProps) {
   const { id } = use(params);
   const router = useRouter();
-  const { user } = useAuthStore();
+  useAuthStore();
   const [post, setPost] = useState<PopulatedPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,9 +48,9 @@ export default function PostPage({ params }: PostPageProps) {
     fetchPost();
   }, [id]);
 
-  const handleAddComment = async (postId: string, content: string) => {
+  const handleAddComment = async (_postId: string, content: string) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/comment`, {
+      const response = await fetch(`/api/posts/${id}/comment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -73,11 +73,13 @@ export default function PostPage({ params }: PostPageProps) {
     }
   };
 
-  const handleEdit = (postId: string, updatedPost: PopulatedPost) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleEdit = (_postId: string, updatedPost: PopulatedPost) => {
     setPost(updatedPost);
   };
 
-  const handleDelete = (postId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleDelete = (_postId: string) => {
     router.push('/feed');
   };
 

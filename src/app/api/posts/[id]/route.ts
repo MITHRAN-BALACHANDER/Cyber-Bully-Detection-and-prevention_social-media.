@@ -13,7 +13,7 @@ import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db';
 import { Post, Connection } from '@/models';
 import { getUserFromRequest, requireAuth } from '@/lib/auth';
-import { success, paginated, notFound, forbidden, handleError } from '@/lib/api-response';
+import { success, notFound, forbidden, handleError } from '@/lib/api-response';
 
 export const dynamic = 'force-dynamic';
 

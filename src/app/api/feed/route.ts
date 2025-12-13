@@ -13,7 +13,10 @@ import { paginated, handleError } from '@/lib/api-response';
 
 export const dynamic = 'force-dynamic';
 
-type FeedItem = Record<string, any>;
+interface FeedItem {
+  createdAt: Date | string;
+  [key: string]: unknown;
+}
 
 export async function GET(request: NextRequest) {
   try {

@@ -93,7 +93,7 @@ ConnectionSchema.statics.getConnectionIds = async function (
     ],
   }).lean();
 
-  return connections.map((conn: any) =>
+  return connections.map((conn: IConnectionDocument) =>
     conn.requesterId.toString() === userId
       ? conn.recipientId.toString()
       : conn.requesterId.toString()

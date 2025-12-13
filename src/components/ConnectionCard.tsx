@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Check, X, Briefcase, MapPin } from 'lucide-react';
 import { Avatar, Button, Card } from '@/components/ui';
-import { cn, truncate } from '@/lib/utils';
+import { truncate } from '@/lib/utils';
 import type { PublicUser, PopulatedConnection } from '@/types';
 
 interface ConnectionCardProps {

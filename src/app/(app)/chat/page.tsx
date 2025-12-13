@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Plus, Search, Loader2 } from 'lucide-react';
-import { ChatWindow, Card, Avatar, Input } from '@/components';
+import { ChatWindow, Avatar } from '@/components';
 import { useAuthStore, useChatStore } from '@/store';
 import { useSocket } from '@/hooks';
 import { cn, formatRelativeTime } from '@/lib/utils';
@@ -15,7 +15,7 @@ export default function ChatPage() {
   const router = useRouter();
   const { user } = useAuthStore();
   const { conversations, setConversations, onlineUsers } = useChatStore();
-  const { isConnected } = useSocket();
+  useSocket();
 
   const selectedConversationId = searchParams.get('conversation');
   const newChatUserId = searchParams.get('user');
@@ -208,7 +208,7 @@ export default function ChatPage() {
             <div className="text-center py-12 px-4">
               <p className="text-gray-500">No conversations yet</p>
               <p className="text-sm text-gray-400 mt-1">
-                Start a conversation from someone's profile
+                Start a conversation from someone&apos;s profile
               </p>
             </div>
           )}

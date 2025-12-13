@@ -55,6 +55,31 @@ export interface ModerationConfig {
   };
 }
 
+// API Response types for external services
+interface GeminiResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+      }>;
+    };
+    finishReason?: string;
+  }>;
+  promptFeedback?: {
+    blockReason?: string;
+  };
+}
+
+interface OpenAIModerationResult {
+  flagged: boolean;
+  categories: Record<string, boolean>;
+  category_scores: Record<string, number>;
+}
+
+interface OpenAIModerationResponse {
+  results?: OpenAIModerationResult[];
+}
+
 // ===========================================
 // DEFAULT CONFIGURATION
 // ===========================================
@@ -120,7 +145,8 @@ const SELF_HARM_PATTERNS = [
   /\b(no\s+one\s+would\s+(miss|care|notice)\s+(if\s+you))\b/gi,
 ];
 
-// Spam patterns
+// Spam patterns (exported for use in spam detection)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SPAM_PATTERNS = [
   /(.)\1{5,}/g, // Repeated characters: aaaaaa
   /(.)(.)\1\2{4,}/g, // Repeated pairs: abababab
@@ -392,7 +418,7 @@ IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format
     }
 
     geminiConsecutiveErrors = 0;
-    const data = await response.json();
+    const data = await response.json() as GeminiResponse;
     
     // Parse Gemini response - check multiple possible response structures
     let responseText = '';
@@ -445,7 +471,7 @@ IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format
     responseText = responseText.replace(/```json\s*/gi, '').replace(/```\s*/g, '');
     
     // Extract JSON from response
-    let jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     
     let scores;
     try {
@@ -561,7 +587,7 @@ async function callOpenAIModeration(text: string): Promise<OpenAIModerationResul
     // Success - reset error counter
     openAIConsecutiveErrors = 0;
     
-    const data = await response.json();
+    const data = await response.json() as OpenAIModerationResponse;
     const result = data.results?.[0] || null;
     
     // Cache the result
