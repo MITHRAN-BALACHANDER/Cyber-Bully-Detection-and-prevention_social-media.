@@ -11,6 +11,8 @@ import { requireAuth } from '@/lib/auth';
 import { validate, paginationSchema } from '@/lib/validations';
 import { paginated, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 type FeedItem = Record<string, any>;
 
 export async function GET(request: NextRequest) {
@@ -60,6 +62,7 @@ export async function GET(request: NextRequest) {
         ],
       })
         .populate('authorId', 'name username avatar headline')
+        .populate('comments.authorId', 'name username avatar')
         .sort({ createdAt: -1 })
         .limit(limit * 2) // Get more to merge with media
         .lean();

@@ -13,6 +13,8 @@ import { requireAuth, getUserFromRequest } from '@/lib/auth';
 import { validate, uploadMediaSchema, paginationSchema } from '@/lib/validations';
 import { success, paginated, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     await connectDB();

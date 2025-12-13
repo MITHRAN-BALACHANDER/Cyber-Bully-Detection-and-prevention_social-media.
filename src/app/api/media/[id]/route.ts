@@ -12,6 +12,8 @@ import { Media } from '@/models';
 import { getUserFromRequest, requireAuth } from '@/lib/auth';
 import { success, notFound, forbidden, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }

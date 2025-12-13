@@ -7,6 +7,8 @@ import { NextRequest } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { success, unauthorized, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request);

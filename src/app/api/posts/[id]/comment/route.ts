@@ -13,6 +13,8 @@ import { requireAuth, getUserFromRequest } from '@/lib/auth';
 import { validate, commentSchema, paginationSchema } from '@/lib/validations';
 import { success, notFound, paginated, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
@@ -41,7 +43,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       (c) => c._id.toString() === comment._id.toString()
     );
 
-    return success(populatedComment, 201);
+    return success({ comment: populatedComment }, 201);
   } catch (err) {
     return handleError(err);
   }

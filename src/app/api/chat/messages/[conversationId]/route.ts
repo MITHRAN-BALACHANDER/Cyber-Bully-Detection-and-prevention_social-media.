@@ -13,6 +13,8 @@ import { requireAuth } from '@/lib/auth';
 import { validate, sendMessageSchema, paginationSchema } from '@/lib/validations';
 import { success, paginated, notFound, forbidden, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ conversationId: string }>;
 }

@@ -5,9 +5,16 @@
 
 import { useEffect, useCallback, useRef } from 'react';
 import { useAuthStore, useChatStore } from '@/store';
-import socket, {
+import {
   connectSocket,
   disconnectSocket,
+  isSocketConnected,
+  joinConversation as socketJoinConversation,
+  leaveConversation as socketLeaveConversation,
+  sendMessage as socketSendMessage,
+  startTyping as socketStartTyping,
+  stopTyping as socketStopTyping,
+  markSeen as socketMarkSeen,
   onNewMessage,
   onMessageSeen,
   onTypingStart,
@@ -134,30 +141,50 @@ export function useSocket() {
 
   // Expose socket methods
   const joinConversation = useCallback((conversationId: string) => {
-    socket.joinConversation(conversationId);
+    socketJoinConversation(conversationId);
   }, []);
 
   const leaveConversation = useCallback((conversationId: string) => {
-    socket.leaveConversation(conversationId);
+    socketLeaveConversation(conversationId);
   }, []);
 
   const sendMessage = useCallback(
-    (conversationId: string, content: string, type?: 'text' | 'image' | 'file') => {
-      socket.sendMessage(conversationId, content, type);
+    async (conversationId: string, content: string, type?: 'text' | 'image' | 'file') => {
+      // Try socket first for real-time delivery
+      if (isSocketConnected()) {
+        socketSendMessage(conversationId, content, type);
+      } else {
+        // Fallback to HTTP API if socket not connected
+        try {
+          const response = await fetch(`/api/chat/messages/${conversationId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ content, type: type || 'text' }),
+          });
+          const data = await response.json();
+          if (data.success) {
+            // Add message to local state
+            addMessage(conversationId, data.data);
+          }
+        } catch (error) {
+          console.error('Failed to send message via HTTP:', error);
+        }
+      }
     },
-    []
+    [addMessage]
   );
 
   const startTyping = useCallback((conversationId: string) => {
-    socket.startTyping(conversationId);
+    socketStartTyping(conversationId);
   }, []);
 
   const stopTyping = useCallback((conversationId: string) => {
-    socket.stopTyping(conversationId);
+    socketStopTyping(conversationId);
   }, []);
 
   const markSeen = useCallback((conversationId: string, messageIds: string[]) => {
-    socket.markSeen(conversationId, messageIds);
+    socketMarkSeen(conversationId, messageIds);
   }, []);
 
   return {
@@ -167,7 +194,7 @@ export function useSocket() {
     startTyping,
     stopTyping,
     markSeen,
-    isConnected: socket.isSocketConnected(),
+    isConnected: isSocketConnected(),
   };
 }
 

@@ -78,7 +78,7 @@ export type PostVisibility = 'public' | 'connections' | 'private';
 
 export interface IComment {
   _id: string;
-  authorId: string;
+  authorId: string | PublicUser;
   content: string;
   createdAt: Date;
 }

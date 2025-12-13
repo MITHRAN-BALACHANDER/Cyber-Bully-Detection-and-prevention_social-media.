@@ -13,6 +13,8 @@ import { getUserFromRequest } from '@/lib/auth';
 import { validate, experienceSchema } from '@/lib/validations';
 import { success, notFound, forbidden, error, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ username: string }>;
 }

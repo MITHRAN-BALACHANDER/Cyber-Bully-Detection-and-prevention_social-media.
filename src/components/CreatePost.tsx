@@ -63,13 +63,28 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
     }
   };
 
-  const handleMediaUpload = () => {
-    // In production, this would upload to Cloudinary
-    // For now, prompt for URL
-    const url = prompt('Enter media URL:');
-    if (url) {
-      setMediaUrls([...mediaUrls, url]);
+  const handleMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // Create preview URLs for the uploaded files
+    const newUrls: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      
+      await new Promise<void>((resolve) => {
+        reader.onloadend = () => {
+          if (reader.result) {
+            newUrls.push(reader.result as string);
+          }
+          resolve();
+        };
+        reader.readAsDataURL(file);
+      });
     }
+    
+    setMediaUrls([...mediaUrls, ...newUrls]);
   };
 
   const removeMedia = (index: number) => {
@@ -186,17 +201,40 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
       )}
 
       {/* Actions */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*,video/*"
+        multiple
+        onChange={handleMediaUpload}
+        className="hidden"
+      />
+      
       <div className="flex items-center justify-between mt-4 pt-4 border-t border-surface-border">
         <div className="flex gap-2">
           <button
-            onClick={handleMediaUpload}
+            type="button"
+            onClick={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.accept = 'image/*';
+                fileInputRef.current.click();
+              }
+            }}
             className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+            title="Add photo"
           >
             <ImageIcon className="w-5 h-5" />
           </button>
           <button
-            onClick={handleMediaUpload}
+            type="button"
+            onClick={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.accept = 'video/*';
+                fileInputRef.current.click();
+              }
+            }}
             className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+            title="Add video"
           >
             <Video className="w-5 h-5" />
           </button>
@@ -210,17 +248,6 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
           Post
         </Button>
       </div>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*,video/*"
-        className="hidden"
-        onChange={(e) => {
-          // Handle file upload
-          console.log(e.target.files);
-        }}
-      />
     </Card>
   );
 }

@@ -24,17 +24,43 @@ interface ChatWindowProps {
 export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowProps) {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
 
   const { user } = useAuthStore();
-  const { messages, typingUsers, onlineUsers } = useChatStore();
-  const { sendMessage, startTyping, stopTyping, markSeen } = useSocket();
+  const { messages, typingUsers, onlineUsers, setMessages } = useChatStore();
+  const { sendMessage, startTyping, stopTyping, markSeen, joinConversation, leaveConversation } = useSocket();
 
   const conversationMessages = messages[conversationId] || [];
   const typingInConversation = typingUsers[conversationId] || [];
   const isOtherUserOnline = otherUser ? onlineUsers.has(otherUser._id) : false;
+
+  // Load messages when conversation opens
+  useEffect(() => {
+    const loadMessages = async () => {
+      setIsLoadingMessages(true);
+      try {
+        const response = await fetch(`/api/chat/messages/${conversationId}`);
+        const data = await response.json();
+        if (data.success) {
+          setMessages(conversationId, data.data);
+        }
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    loadMessages();
+    joinConversation(conversationId);
+
+    return () => {
+      leaveConversation(conversationId);
+    };
+  }, [conversationId, joinConversation, leaveConversation, setMessages]);
 
   // Scroll to bottom on new messages
   useEffect(() => {

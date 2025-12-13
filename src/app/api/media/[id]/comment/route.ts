@@ -10,6 +10,8 @@ import { requireAuth } from '@/lib/auth';
 import { validate, commentSchema } from '@/lib/validations';
 import { success, notFound, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }

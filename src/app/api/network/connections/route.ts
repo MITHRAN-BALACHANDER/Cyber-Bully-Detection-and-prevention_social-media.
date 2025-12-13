@@ -10,6 +10,8 @@ import { requireAuth } from '@/lib/auth';
 import { validate, paginationSchema } from '@/lib/validations';
 import { paginated, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -51,22 +53,8 @@ export async function GET(request: NextRequest) {
       Connection.countDocuments(query),
     ]);
 
-    // Transform connections to show the "other" user
-    const transformedConnections = connections.map((conn) => {
-      const isRequester = conn.requesterId._id.toString() === currentUser._id.toString();
-      const otherUser = isRequester ? conn.recipientId : conn.requesterId;
-
-      return {
-        _id: conn._id,
-        user: otherUser,
-        status: conn.status,
-        isRequester,
-        createdAt: conn.createdAt,
-        updatedAt: conn.updatedAt,
-      };
-    });
-
-    return paginated(transformedConnections, { page, limit, total });
+    // Return full connection objects with populated user info
+    return paginated(connections, { page, limit, total });
   } catch (err) {
     return handleError(err);
   }

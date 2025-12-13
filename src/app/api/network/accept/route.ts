@@ -10,6 +10,8 @@ import { requireAuth } from '@/lib/auth';
 import { validate, connectionResponseSchema } from '@/lib/validations';
 import { success, notFound, forbidden, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     await connectDB();

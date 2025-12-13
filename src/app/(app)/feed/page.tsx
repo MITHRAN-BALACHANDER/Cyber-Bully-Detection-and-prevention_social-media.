@@ -60,6 +60,19 @@ export default function FeedPage() {
     fetchFeed(1, true);
   };
 
+  const handleLike = async (postId: string) => {
+    // Refresh the specific post or entire feed
+    fetchFeed(1, true);
+  };
+
+  const handleComment = async (postId: string) => {
+    // Open comment section (already handled by PostCard)
+  };
+
+  const handleShare = async (postId: string) => {
+    // Share handled by PostCard
+  };
+
   const handleLikePost = async (id: string, type: 'post' | 'media') => {
     try {
       const endpoint = type === 'post' ? `/api/posts/${id}/like` : `/api/media/${id}/like`;
@@ -79,6 +92,37 @@ export default function FeedPage() {
       );
     } catch (error) {
       console.error('Failed to like:', error);
+    }
+  };
+
+  const handleAddComment = async (postId: string, content: string) => {
+    try {
+      const response = await fetch(`/api/posts/${postId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) throw new Error('Failed to add comment');
+
+      const { comment } = await response.json();
+      
+      // Optimistically update the UI
+      setItems((prev) =>
+        prev.map((item) => {
+          if (item._id === postId && 'comments' in item) {
+            return {
+              ...item,
+              comments: [...(item.comments || []), comment],
+            };
+          }
+          return item;
+        })
+      );
+    } catch (error) {
+      console.error('Failed to add comment:', error);
+      throw error;
     }
   };
 
@@ -117,6 +161,7 @@ export default function FeedPage() {
               <PostCard
                 post={item}
                 onLike={() => handleLikePost(item._id, 'post')}
+                onAddComment={handleAddComment}
               />
             ) : (
               <Card className="p-0 overflow-hidden">

@@ -9,6 +9,8 @@ import { User } from '@/models';
 import { validate, paginationSchema } from '@/lib/validations';
 import { paginated, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     await connectDB();

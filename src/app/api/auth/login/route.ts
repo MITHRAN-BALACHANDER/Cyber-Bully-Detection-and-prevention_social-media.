@@ -9,6 +9,8 @@ import { User } from '@/models';
 import { comparePassword, generateToken, setAuthCookie } from '@/lib/auth';
 import { validate, loginSchema } from '@/lib/validations';
 import { success, error, handleError } from '@/lib/api-response';
+
+export const dynamic = 'force-dynamic';
 import { AuthUser } from '@/types';
 
 export async function POST(request: NextRequest) {

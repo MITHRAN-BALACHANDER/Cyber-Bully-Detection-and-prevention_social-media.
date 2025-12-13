@@ -9,6 +9,8 @@ import { Conversation, Message } from '@/models';
 import { requireAuth } from '@/lib/auth';
 import { successMessage, notFound, forbidden, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ conversationId: string }>;
 }

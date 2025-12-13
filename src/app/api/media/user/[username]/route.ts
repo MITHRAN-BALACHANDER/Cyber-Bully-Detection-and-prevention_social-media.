@@ -10,6 +10,8 @@ import { getUserFromRequest } from '@/lib/auth';
 import { validate, paginationSchema } from '@/lib/validations';
 import { paginated, notFound, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ username: string }>;
 }

@@ -44,13 +44,16 @@ export default function ChatPage() {
       const response = await fetch('/api/chat/conversation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recipientId: userId }),
+        credentials: 'include',
+        body: JSON.stringify({ participantId: userId }),
       });
       const data = await response.json();
       if (data.success) {
         setSelectedConversation(data.data);
         router.replace(`/chat?conversation=${data.data._id}`);
         fetchConversations();
+      } else {
+        console.error('Failed to create conversation:', data);
       }
     } catch (error) {
       console.error('Failed to create conversation:', error);
@@ -134,7 +137,11 @@ export default function ChatPage() {
         <div className="p-4 border-b border-surface-border">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold">Messages</h1>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <button 
+              onClick={() => router.push('/network?tab=connections')}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              title="Start a new conversation"
+            >
               <Plus className="w-5 h-5" />
             </button>
           </div>

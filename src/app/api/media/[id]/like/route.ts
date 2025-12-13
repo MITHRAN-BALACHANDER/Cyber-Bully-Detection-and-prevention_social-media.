@@ -9,6 +9,8 @@ import { Media } from '@/models';
 import { requireAuth } from '@/lib/auth';
 import { success, notFound, handleError } from '@/lib/api-response';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }

@@ -21,12 +21,14 @@ import {
 import { Avatar, Card, Button } from '@/components/ui';
 import { cn, formatRelativeTime, formatCount } from '@/lib/utils';
 import type { PopulatedPost, PublicUser } from '@/types';
+import CommentSection from './CommentSection';
 
 interface PostCardProps {
   post: PopulatedPost;
   onLike?: (postId: string) => void;
   onComment?: (postId: string) => void;
   onShare?: (postId: string) => void;
+  onAddComment?: (postId: string, content: string) => Promise<void>;
 }
 
 const visibilityIcons = {
@@ -35,17 +37,47 @@ const visibilityIcons = {
   private: Lock,
 };
 
-export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
+export function PostCard({ post, onLike, onComment, onShare, onAddComment }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likeCount, setLikeCount] = useState(post.likeCount || post.likes.length);
   const [showComments, setShowComments] = useState(false);
+  const [commentCount, setCommentCount] = useState(post.comments?.length || 0);
 
   const author = post.authorId as PublicUser;
   const VisibilityIcon = visibilityIcons[post.visibility];
 
   const handleLike = async () => {
+    const previousState = isLiked;
+    const previousCount = likeCount;
+    
+    // Optimistic update
     setIsLiked(!isLiked);
     setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+    
+    try {
+      const response = await fetch(`/api/posts/${post._id}/like`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        // Revert on error
+        setIsLiked(previousState);
+        setLikeCount(previousCount);
+      } else {
+        const data = await response.json();
+        if (data.success) {
+          setIsLiked(data.data.isLiked);
+          setLikeCount(data.data.likeCount);
+        }
+      }
+    } catch (error) {
+      // Revert on error
+      setIsLiked(previousState);
+      setLikeCount(previousCount);
+      console.error('Failed to like post:', error);
+    }
+    
     onLike?.(post._id);
   };
 
@@ -141,12 +173,12 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
           )}
         </div>
         <div className="flex items-center gap-3">
-          {(post.commentCount || post.comments.length) > 0 && (
+          {commentCount > 0 && (
             <button
               onClick={() => setShowComments(!showComments)}
               className="hover:underline"
             >
-              {formatCount(post.commentCount || post.comments.length)} comments
+              {formatCount(commentCount)} {commentCount === 1 ? 'comment' : 'comments'}
             </button>
           )}
           {post.repostCount > 0 && (
@@ -185,7 +217,23 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
         </button>
 
         <button
-          onClick={() => onShare?.(post._id)}
+          onClick={async () => {
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: `${author.name}'s post`,
+                  text: post.content.substring(0, 100),
+                  url: `${window.location.origin}/post/${post._id}`,
+                });
+              } catch (err) {
+                console.log('Share cancelled');
+              }
+            } else {
+              await navigator.clipboard.writeText(`${window.location.origin}/post/${post._id}`);
+              alert('Link copied to clipboard!');
+            }
+            onShare?.(post._id);
+          }}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
         >
           <Share2 className="w-5 h-5" />
@@ -194,27 +242,22 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
       </div>
 
       {/* Comments Section (expandable) */}
-      {showComments && post.comments.length > 0 && (
+      {showComments && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="border-t border-surface-border pt-3 mt-3"
+          className="border-t border-surface-border"
         >
-          {post.comments.slice(0, 3).map((comment) => (
-            <div key={comment._id} className="flex gap-3 mb-3">
-              <Avatar
-                src={(comment.authorId as unknown as PublicUser)?.avatar}
-                name={(comment.authorId as unknown as PublicUser)?.name || 'User'}
-                size="sm"
-              />
-              <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2">
-                <p className="font-medium text-sm text-gray-900">
-                  {(comment.authorId as unknown as PublicUser)?.name}
-                </p>
-                <p className="text-sm text-gray-700">{comment.content}</p>
-              </div>
-            </div>
-          ))}
+          <CommentSection
+            postId={post._id}
+            comments={post.comments || []}
+            onAddComment={async (content: string) => {
+              if (onAddComment) {
+                await onAddComment(post._id, content);
+                setCommentCount(prev => prev + 1);
+              }
+            }}
+          />
         </motion.div>
       )}
     </Card>

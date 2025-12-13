@@ -6,11 +6,21 @@
  * Delete a post (author only)
  */
 
+/**
+ * GET /api/posts/[id]
+ * Get a single post by ID
+ * 
+ * DELETE /api/posts/[id]
+ * Delete a post (author only)
+ */
+
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db';
 import { Post, Connection } from '@/models';
 import { getUserFromRequest, requireAuth } from '@/lib/auth';
-import { success, notFound, forbidden, handleError } from '@/lib/api-response';
+import { success, paginated, notFound, forbidden, handleError } from '@/lib/api-response';
+
+export const dynamic = 'force-dynamic';
 
 interface RouteParams {
   params: Promise<{ id: string }>;

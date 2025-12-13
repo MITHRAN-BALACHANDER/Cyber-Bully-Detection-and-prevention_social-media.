@@ -50,6 +50,7 @@ const UserSchema = new Schema<IUserDocument>(
       type: String,
       required: [true, 'Username is required'],
       unique: true,
+      index: true,
       trim: true,
       lowercase: true,
       minlength: [3, 'Username must be at least 3 characters'],
@@ -60,6 +61,7 @@ const UserSchema = new Schema<IUserDocument>(
       type: String,
       required: [true, 'Email is required'],
       unique: true,
+      index: true,
       trim: true,
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email'],
@@ -129,8 +131,6 @@ const UserSchema = new Schema<IUserDocument>(
 );
 
 // Indexes for efficient queries
-UserSchema.index({ username: 1 });
-UserSchema.index({ email: 1 });
 UserSchema.index({ 'skills': 1 });
 UserSchema.index({ name: 'text', headline: 'text', bio: 'text' });
 
