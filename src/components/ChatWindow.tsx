@@ -1,6 +1,6 @@
 /**
  * ChatWindow Component
- * WhatsApp-style chat interface
+ * Modern chat interface with real-time messaging
  */
 
 'use client';

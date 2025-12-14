@@ -15,11 +15,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses = {
-  primary: 'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700',
-  secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300',
-  outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
-  ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200',
-  danger: 'bg-error text-white hover:bg-red-600 active:bg-red-700',
+  primary: 'bg-primary-600 text-white hover:bg-primary-700 active:scale-[0.98] shadow-sm hover:shadow-md',
+  secondary: 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 shadow-sm',
+  outline: 'border-2 border-gray-200 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50',
+  ghost: 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+  danger: 'bg-red-600 text-white hover:bg-red-700 active:scale-[0.98] shadow-sm hover:shadow-md',
 };
 
 const sizeClasses = {
@@ -46,10 +46,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          'inline-flex items-center justify-center font-medium rounded-lg',
-          'transition-colors duration-200',
-          'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'inline-flex items-center justify-center font-semibold rounded-xl',
+          'transition-all duration-200 ease-out',
+          'focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:ring-offset-2',
+          'disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none',
           variantClasses[variant],
           sizeClasses[size],
           className

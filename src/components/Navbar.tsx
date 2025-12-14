@@ -59,21 +59,21 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-40 bg-white border-b border-surface-border">
-      <div className="max-w-6xl mx-auto px-4">
+    <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/feed" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+          <Link href="/feed" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 bg-gradient-to-br from-primary-600 to-primary-700 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
               <span className="text-white font-bold text-lg">S</span>
             </div>
-            <span className="font-bold text-xl text-gray-900 hidden sm:block">
+            <span className="font-bold text-xl text-gray-900 hidden sm:block group-hover:text-primary-600 transition-colors">
               Social
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -84,22 +84,16 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'relative flex flex-col items-center px-6 py-2 rounded-lg transition-colors',
+                    'relative flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200',
                     isActive
-                      ? 'text-primary-600 bg-primary-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-primary-600 bg-primary-50 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                   )}
                 >
-                  <Icon className="w-6 h-6" />
-                  <span className="text-xs mt-1">{item.label}</span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="navIndicator"
-                      className="absolute -bottom-[1px] left-4 right-4 h-0.5 bg-primary-500"
-                    />
-                  )}
+                  <Icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{item.label}</span>
                   {showBadge && (
-                    <span className="absolute top-1 right-4 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="ml-1 px-2 py-0.5 bg-red-500 text-white text-xs font-semibold rounded-full flex items-center justify-center">
                       {totalUnread > 9 ? '9+' : totalUnread}
                     </span>
                   )}
@@ -114,16 +108,17 @@ export function Navbar() {
               <>
                 {/* Create Post */}
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="sm"
-                  className="hidden sm:flex"
+                  className="hidden sm:flex gap-2"
                   onClick={() => router.push('/create')}
                 >
-                  <PlusSquare className="w-5 h-5" />
+                  <PlusSquare className="w-4 h-4" />
+                  <span className="hidden lg:inline">Create</span>
                 </Button>
 
                 {/* Notifications */}
-                <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                <button className="relative p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200">
                   <Bell className="w-5 h-5" />
                   {/* Notification badge would go here */}
                 </button>
@@ -132,7 +127,7 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-lg transition-colors"
+                    className="flex items-center gap-2 p-1.5 hover:bg-gray-100 rounded-xl transition-all duration-200"
                   >
                     <Avatar src={user.avatar} name={user.name} size="sm" />
                   </button>
@@ -148,39 +143,41 @@ export function Navbar() {
                           initial={{ opacity: 0, scale: 0.95, y: -10 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-surface-border z-20 overflow-hidden"
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden"
                         >
-                          <div className="p-4 border-b border-surface-border">
-                            <p className="font-semibold text-gray-900">
+                          <div className="p-4 border-b border-gray-100 bg-gradient-to-br from-gray-50 to-white">
+                            <p className="font-semibold text-gray-900 text-base">
                               {user.name}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 mt-0.5">
                               @{user.username}
                             </p>
                           </div>
                           <div className="py-2">
                             <Link
                               href={`/profile/${user.username}`}
-                              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                              className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors"
                               onClick={() => setShowUserMenu(false)}
                             >
                               <User className="w-5 h-5" />
-                              View Profile
+                              <span className="font-medium">View Profile</span>
                             </Link>
                             <Link
                               href="/settings"
-                              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                              className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors"
                               onClick={() => setShowUserMenu(false)}
                             >
                               <Settings className="w-5 h-5" />
-                              Settings
+                              <span className="font-medium">Settings</span>
                             </Link>
+                            <div className="my-1 border-t border-gray-100" />
                             <button
                               onClick={handleLogout}
-                              className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors"
                             >
                               <LogOut className="w-5 h-5" />
-                              Log out
+                              <span className="font-medium">Log out</span>
                             </button>
                           </div>
                         </motion.div>
@@ -200,13 +197,13 @@ export function Navbar() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+              className="md:hidden p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200"
               onClick={() => setShowMobileMenu(!showMobileMenu)}
             >
               {showMobileMenu ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               )}
             </button>
           </div>

@@ -13,6 +13,7 @@ import { requireAuth, getUserFromRequest } from '@/lib/auth';
 import { validate, createPostSchema, paginationSchema } from '@/lib/validations';
 import { success, paginated, handleError, error } from '@/lib/api-response';
 import { moderateContent, logModerationDecision } from '@/lib/content-moderation';
+import { checkAccountLock, recordViolation, updateStreak } from '@/lib/violation-tracker';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +21,26 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const currentUser = await requireAuth(request);
+
+    // ========================================
+    // CHECK ACCOUNT LOCK STATUS
+    // ========================================
+    const lockStatus = await checkAccountLock(currentUser.email);
+    if (lockStatus.isLocked) {
+      const hours = Math.floor(lockStatus.remainingMinutes / 60);
+      const minutes = lockStatus.remainingMinutes % 60;
+      return error(
+        `Your account is temporarily locked due to multiple violations. Time remaining: ${hours}h ${minutes}m`,
+        403,
+        {
+          code: 'ACCOUNT_LOCKED',
+          lockUntil: lockStatus.lockUntil,
+          remainingMinutes: lockStatus.remainingMinutes,
+          reason: lockStatus.lockReason,
+        }
+      );
+    }
+    // ========================================
 
     const body = await request.json();
     const data = validate(createPostSchema, body);
@@ -35,18 +56,41 @@ export async function POST(request: NextRequest) {
         userId: currentUser._id.toString(),
       });
       
-      // If content is flagged, reject the post
+      // If content is flagged, reject the post and record violation
       if (!moderationResult.approved) {
+        // Record violation and potentially lock account
+        const violationResult = await recordViolation(currentUser.email, moderationResult);
+        
+        const errorData: any = {
+          code: 'CONTENT_MODERATION_FAILED',
+          flaggedCategories: moderationResult.reasons,
+          scores: moderationResult.scores,
+          dailyViolationCount: violationResult.dailyCount,
+          streakReset: violationResult.streakReset,
+        };
+
+        // If account was locked, include lock info
+        if (violationResult.accountLocked) {
+          errorData.accountLocked = true;
+          errorData.lockDuration = violationResult.lockDuration;
+          errorData.lockUntil = violationResult.lockUntil;
+          
+          return error(
+            `Post rejected. Account locked for ${violationResult.lockDuration} hours due to ${violationResult.dailyCount} violations. Reasons: ${moderationResult.reasons.join(', ')}`,
+            403,
+            errorData
+          );
+        }
+
         return error(
-          `Post rejected: ${moderationResult.reasons.join(', ')}`,
+          `Post rejected: ${moderationResult.reasons.join(', ')}. Warning: ${violationResult.dailyCount}/3 violations today.`,
           400,
-          {
-            code: 'CONTENT_MODERATION_FAILED',
-            flaggedCategories: moderationResult.reasons,
-            scores: moderationResult.scores,
-          }
+          errorData
         );
       }
+      
+      // Content is clean - update streak
+      await updateStreak(currentUser.email);
       
       // Use sanitized content if available
       if (moderationResult.sanitizedContent) {
