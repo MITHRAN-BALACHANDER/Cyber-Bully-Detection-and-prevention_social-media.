@@ -68,7 +68,7 @@ export function Navbar() {
               <span className="text-white font-bold text-lg">S</span>
             </div>
             <span className="font-bold text-xl text-gray-900 hidden sm:block group-hover:text-primary-600 transition-colors">
-              Social
+              swirl
             </span>
           </Link>
 

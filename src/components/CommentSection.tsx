@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IComment } from '@/types';
+import { IComment, PublicUser } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
 import Image from 'next/image';
 import { AlertCircle, Lock, X } from 'lucide-react';

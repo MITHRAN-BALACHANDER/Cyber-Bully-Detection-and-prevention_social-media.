@@ -111,7 +111,7 @@ const DEFAULT_CONFIG: ModerationConfig = {
 const BULLYING_PATTERNS = [
   // Direct insults
   /\b(loser|idiot|stupid|dumb|ugly|fat|skinny|nerd|geek|freak|weirdo)\b/gi,
-  // Social exclusion
+  // swirl exclusion
   /\b(nobody\s+(likes|wants|cares)|go\s+away|leave\s+me\s+alone|don't\s+talk\s+to\s+me)\b/gi,
   // Belittling
   /\b(you('re|\s+are)\s+(worthless|pathetic|useless|nothing|a\s+joke))\b/gi,

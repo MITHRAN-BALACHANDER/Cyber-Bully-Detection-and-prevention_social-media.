@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sign In | SocialHub',
-  description: 'Sign in to your SocialHub account',
+  title: 'Sign In | swirlHub',
+  description: 'Sign in to your swirlHub account',
 };
 
 export default function AuthLayout({

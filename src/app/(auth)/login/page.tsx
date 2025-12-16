@@ -37,7 +37,7 @@ export default function LoginPage() {
             <span className="text-white font-bold text-2xl">S</span>
           </div>
           <span className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
-            Social
+            swirl
           </span>
         </Link>
         <h2 className="mt-8 text-3xl font-bold text-gray-900">

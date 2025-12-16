@@ -5,9 +5,9 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Social Media Platform',
-  description: 'A unified social networking platform',
-  keywords: ['social media', 'networking', 'chat', 'posts', 'media'],
+  title: 'swirl Media Platform',
+  description: 'A unified swirl networking platform',
+  keywords: ['swirl media', 'networking', 'chat', 'posts', 'media'],
 };
 
 export default function RootLayout({
