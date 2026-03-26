@@ -1,0 +1,9 @@
+torch
+transformers
+datasets
+accelerate
+onnx
+onnxruntime
+numpy
+scikit-learn
+tqdm
