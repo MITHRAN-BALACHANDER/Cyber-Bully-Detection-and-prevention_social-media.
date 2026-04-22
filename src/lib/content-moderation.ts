@@ -359,8 +359,8 @@ async function callGeminiModeration(text: string): Promise<OpenAIModerationResul
     // Escape the text for JSON
     const escapedText = text.substring(0, 500).replace(/"/g, '\\"').replace(/\n/g, ' ');
     
-    // Use Gemini to analyze content for moderation
-    const prompt = `You are a content moderation system. Analyze the following text and rate each category from 0.0 to 1.0 where 0 is safe and 1 is highly problematic.
+    // Use Gemini to analyze content for semantic meaning and moderation
+    const prompt = `You are an advanced semantic content moderation system. Deeply analyze the meaning and context of the following text, ignoring innocent uses of keywords, and rate each safety category from 0.0 to 1.0 where 0 is completely safe and 1 is highly problematic or toxic.
 
 Categories:
 - harassment: bullying, threats, intimidation, personal attacks
@@ -368,11 +368,15 @@ Categories:
 - violence: threats of physical harm, violent content
 - self_harm: suicide, self-injury encouragement
 - sexual: explicit sexual content, inappropriate material
+- spam: repetitive spam, promotions, clickbait, phishing
+- profanity: excessive, aggressive, or harmful swearing
+- bullying: targeted mocking, belittling, or exclusion
+- toxicity: generally negative, irritating, or hostile tone
 
 Text to analyze: "${escapedText}"
 
-IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format:
-{"harassment":0.0,"hate":0.0,"violence":0.0,"self_harm":0.0,"sexual":0.0}`;
+IMPORTANT: Respond with ONLY a JSON object format. Use this exact structure:
+{"harassment":0.0,"hate":0.0,"violence":0.0,"self_harm":0.0,"sexual":0.0,"spam":0.0,"profanity":0.0,"bullying":0.0,"toxicity":0.0}`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
@@ -433,20 +437,8 @@ IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format
       console.log('Gemini: Content blocked by safety filters');
       return {
         flagged: true,
-        categories: {
-          'harassment': true,
-          'hate': false,
-          'violence': false,
-          'self-harm': false,
-          'sexual': false,
-        },
-        category_scores: {
-          'harassment': 0.9,
-          'hate': 0,
-          'violence': 0,
-          'self-harm': 0,
-          'sexual': 0,
-        },
+        categories: { 'harassment': true },
+        category_scores: { 'harassment': 0.9 },
       };
     }
     // Check for prompt feedback (blocked before generation)
@@ -454,8 +446,8 @@ IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format
       console.log('Gemini: Prompt blocked:', data.promptFeedback.blockReason);
       return {
         flagged: true,
-        categories: { 'harassment': true, 'hate': false, 'violence': false, 'self-harm': false, 'sexual': false },
-        category_scores: { 'harassment': 0.9, 'hate': 0, 'violence': 0, 'self-harm': 0, 'sexual': 0 },
+        categories: { 'harassment': true },
+        category_scores: { 'harassment': 0.9 },
       };
     }
     
@@ -505,6 +497,10 @@ IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format
         'violence': scores.violence > 0.5,
         'self-harm': scores.self_harm > 0.5,
         'sexual': scores.sexual > 0.5,
+        'spam': scores.spam > 0.5,
+        'profanity': scores.profanity > 0.5,
+        'bullying': scores.bullying > 0.5,
+        'toxicity': scores.toxicity > 0.5,
       },
       category_scores: {
         'harassment': scores.harassment || 0,
@@ -512,6 +508,10 @@ IMPORTANT: Respond with ONLY a JSON object, no other text. Use this exact format
         'violence': scores.violence || 0,
         'self-harm': scores.self_harm || 0,
         'sexual': scores.sexual || 0,
+        'spam': scores.spam || 0,
+        'profanity': scores.profanity || 0,
+        'bullying': scores.bullying || 0,
+        'toxicity': scores.toxicity || 0,
       },
     };
 
@@ -760,12 +760,12 @@ export async function moderateContent(
   const reasons: string[] = [];
   let overallConfidence = 1;
   
-  // 1. AI Moderation API (OpenAI -> Gemini fallback)
+  // 1. AI Semantic Moderation API (OpenAI -> Gemini fallback)
   if (finalConfig.enableOpenAI) {
     const aiResult = await callAIModeration(content);
     
     if (aiResult) {
-      // Map AI scores to our scores
+      // Map AI scores to our unified semantic scores
       scores.harassment = Math.max(
         scores.harassment,
         aiResult.category_scores['harassment'] || 0,
@@ -792,55 +792,22 @@ export async function moderateContent(
         aiResult.category_scores['sexual'] || 0,
         aiResult.category_scores['sexual/minors'] || 0
       );
+
+      // Capture the additional semantically parsed categories explicitly prompted for
+      if (aiResult.category_scores['spam'] !== undefined) scores.spam = aiResult.category_scores['spam'];
+      if (aiResult.category_scores['profanity'] !== undefined) scores.profanity = aiResult.category_scores['profanity'];
+      if (aiResult.category_scores['bullying'] !== undefined) scores.bullying = aiResult.category_scores['bullying'];
+      if (aiResult.category_scores['toxicity'] !== undefined) scores.toxicity = aiResult.category_scores['toxicity'];
       
-      overallConfidence = 0.95; // High confidence with AI moderation
+      overallConfidence = 0.98; // Highest confidence utilizing true semantic inference
     } else {
-      overallConfidence = 0.7; // Lower confidence with local NLP only
+      overallConfidence = 0.7; // Lower confidence without AI
     }
   }
   
-  // 2. Custom NLP Pattern Detection (if enabled)
-  if (finalConfig.enableNLP) {
-    // Bullying detection
-    const bullyingScore = calculatePatternScore(content, BULLYING_PATTERNS);
-    scores.bullying = Math.max(scores.bullying, bullyingScore);
-    
-    // Additional hate speech detection
-    const hateScore = calculatePatternScore(content, HATE_SPEECH_PATTERNS);
-    scores.hateSpeech = Math.max(scores.hateSpeech, hateScore);
-    
-    // Violence detection
-    const violenceScore = calculatePatternScore(content, VIOLENCE_PATTERNS);
-    scores.violence = Math.max(scores.violence, violenceScore);
-    
-    // Self-harm detection
-    const selfHarmScore = calculatePatternScore(content, SELF_HARM_PATTERNS);
-    scores.selfHarm = Math.max(scores.selfHarm, selfHarmScore);
-    
-    // Toxicity analysis
-    scores.toxicity = calculateToxicity(content);
-    
-    // NLP sentiment analysis
-    const nlpResult = analyzeWithNLP(content);
-    if (nlpResult.sentiment === 'negative' && nlpResult.sentimentScore < -0.3) {
-      scores.toxicity = Math.max(scores.toxicity, Math.abs(nlpResult.sentimentScore));
-    }
-  }
-  
-  // 3. Profanity Filter (if enabled)
-  if (finalConfig.enableProfanityFilter) {
-    const profanityResult = checkProfanity(content);
-    scores.profanity = profanityResult.score;
-    
-    if (profanityResult.found.length > 0) {
-      reasons.push(`Contains profanity: ${profanityResult.found.join(', ')}`);
-    }
-  }
-  
-  // 4. Spam Detection (if enabled)
-  if (finalConfig.enableSpamDetection) {
-    scores.spam = checkSpam(content);
-  }
+  // 2. Local Keyword and Regex NLP Analysis (Deprecated)
+  // Replaced strictly with Semantic LLM evaluation per requirements.
+
   
   // Determine if content should be flagged
   const flaggedCategories: string[] = [];
