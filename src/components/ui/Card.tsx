@@ -14,9 +14,11 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantClasses = {
-  default: 'bg-white',
-  bordered: 'bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200',
-  elevated: 'bg-white shadow-md hover:shadow-lg transition-shadow duration-200',
+  default: 'bg-card text-card-foreground',
+  bordered:
+    'bg-card/70 text-card-foreground border border-border backdrop-blur-xl shadow-[0_0_0_1px_var(--border)_inset]',
+  elevated:
+    'bg-card/80 text-card-foreground border border-border backdrop-blur-xl shadow-[var(--shadow-soft)]',
 };
 
 const paddingClasses = {
@@ -32,7 +34,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-xl',
+          'rounded-3xl',
           variantClasses[variant],
           paddingClasses[padding],
           className
@@ -90,7 +92,7 @@ export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
       <div
         ref={ref}
         className={cn(
-          'flex items-center gap-4 pt-3 mt-3 border-t border-surface-border',
+          'flex items-center gap-4 pt-3 mt-3 border-t border-border',
           className
         )}
         {...props}

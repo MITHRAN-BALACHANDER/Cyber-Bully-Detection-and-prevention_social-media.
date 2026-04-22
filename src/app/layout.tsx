@@ -1,13 +1,23 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { AppProviders } from '@/components/providers/AppProviders';
 
-const inter = Inter({ subsets: ['latin'] });
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
-  title: 'swirl Media Platform',
-  description: 'A unified swirl networking platform',
-  keywords: ['swirl media', 'networking', 'chat', 'posts', 'media'],
+  title: 'SocialHub',
+  description:
+    'A unified modern social platform for creators, professionals, and communities.',
+  keywords: ['SocialHub', 'social', 'networking', 'chat', 'posts', 'media'],
 };
 
 export default function RootLayout({
@@ -17,10 +27,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          {children}
-        </div>
+      <body className={`${geist.variable} ${geistMono.variable} font-sans`}>
+        <AppProviders>
+          <div className="min-h-screen flex flex-col">{children}</div>
+        </AppProviders>
       </body>
     </html>
   );

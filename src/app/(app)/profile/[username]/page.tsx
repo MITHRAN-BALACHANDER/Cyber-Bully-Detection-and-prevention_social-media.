@@ -127,7 +127,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -135,14 +135,14 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">User not found</h1>
-        <p className="text-gray-600 mt-2">The user you&apos;re looking for doesn&apos;t exist.</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">User not found</h1>
+        <p className="text-muted-foreground mt-2">The user you&apos;re looking for doesn&apos;t exist.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="mx-auto w-full max-w-[900px]">
       {/* Profile Card */}
       <ProfileCard
         user={user}
@@ -162,10 +162,10 @@ export default function ProfilePage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                'px-6 py-2.5 text-sm font-semibold transition-all duration-200 rounded-xl flex-1',
+                'px-5 py-2.5 text-sm font-semibold transition-all duration-200 rounded-2xl flex-1',
                 activeTab === tab
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-white/6 text-foreground shadow-[0_0_0_1px_var(--border)_inset]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
               )}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -190,7 +190,7 @@ export default function ProfilePage() {
               ))
             ) : (
               <Card className="text-center py-12">
-                <p className="text-gray-500">No posts yet</p>
+                <p className="text-muted-foreground">No posts yet</p>
               </Card>
             )}
           </div>
@@ -202,7 +202,7 @@ export default function ProfilePage() {
               <MediaGrid media={media} columns={3} />
             ) : (
               <Card className="text-center py-12">
-                <p className="text-gray-500">No media yet</p>
+                <p className="text-muted-foreground">No media yet</p>
               </Card>
             )}
           </div>
@@ -213,19 +213,19 @@ export default function ProfilePage() {
             {/* Experience */}
             {user.experience && user.experience.length > 0 && (
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Experience</h3>
+                <h3 className="font-semibold text-foreground mb-3">Experience</h3>
                 <div className="space-y-4">
                   {user.experience.map((exp, index) => (
                     <div key={index} className="flex gap-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <span className="text-lg font-semibold text-gray-400">
+                      <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center">
+                        <span className="text-lg font-semibold text-muted-foreground">
                           {exp.company.charAt(0)}
                         </span>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">{exp.title}</p>
-                        <p className="text-gray-600">{exp.company}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-semibold text-foreground">{exp.title}</p>
+                        <p className="text-muted-foreground">{exp.company}</p>
+                        <p className="text-sm text-muted-foreground">
                           {new Date(exp.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                           {' — '}
                           {exp.endDate
@@ -233,7 +233,7 @@ export default function ProfilePage() {
                             : 'Present'}
                         </p>
                         {exp.description && (
-                          <p className="text-gray-600 mt-2">{exp.description}</p>
+                          <p className="text-muted-foreground mt-2">{exp.description}</p>
                         )}
                       </div>
                     </div>
@@ -245,19 +245,19 @@ export default function ProfilePage() {
             {/* Education */}
             {user.education && user.education.length > 0 && (
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Education</h3>
+                <h3 className="font-semibold text-foreground mb-3">Education</h3>
                 <div className="space-y-4">
                   {user.education.map((edu, index) => (
                     <div key={index} className="flex gap-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <span className="text-lg font-semibold text-gray-400">
+                      <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center">
+                        <span className="text-lg font-semibold text-muted-foreground">
                           {edu.school.charAt(0)}
                         </span>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">{edu.school}</p>
-                        <p className="text-gray-600">{edu.degree} in {edu.field}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-semibold text-foreground">{edu.school}</p>
+                        <p className="text-muted-foreground">{edu.degree} in {edu.field}</p>
+                        <p className="text-sm text-muted-foreground">
                           {new Date(edu.startDate).getFullYear()} — {edu.endDate ? new Date(edu.endDate).getFullYear() : 'Present'}
                         </p>
                       </div>
@@ -270,12 +270,12 @@ export default function ProfilePage() {
             {/* Skills */}
             {user.skills && user.skills.length > 0 && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Skills</h3>
+                <h3 className="font-semibold text-foreground mb-3">Skills</h3>
                 <div className="flex flex-wrap gap-2">
                   {user.skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-primary-50 text-primary-700 text-sm rounded-full"
+                      className="px-3 py-1 bg-white/5 text-foreground text-sm rounded-full border border-white/5"
                     >
                       {skill}
                     </span>
@@ -286,7 +286,7 @@ export default function ProfilePage() {
 
             {/* Empty state */}
             {!user.experience?.length && !user.education?.length && !user.skills?.length && (
-              <p className="text-gray-500 text-center py-8">
+              <p className="text-muted-foreground text-center py-8">
                 No additional information available
               </p>
             )}

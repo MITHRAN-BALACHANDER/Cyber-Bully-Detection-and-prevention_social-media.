@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Navbar } from '@/components';
+import { AppShell } from '@/components';
 import { useAuthStore } from '@/store';
 
 export default function AppLayout({
@@ -59,11 +59,6 @@ export default function AppLayout({
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="flex-1 pt-16">
-        {children}
-      </main>
-    </>
+    <AppShell>{children}</AppShell>
   );
 }

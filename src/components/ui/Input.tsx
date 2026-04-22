@@ -23,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-muted-foreground mb-1.5"
           >
             {label}
           </label>
@@ -32,14 +32,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            'w-full px-4 py-2.5 rounded-xl border bg-white',
-            'text-gray-900 placeholder:text-gray-400',
+            'w-full px-4 py-2.5 rounded-2xl border bg-card/60 backdrop-blur-xl',
+            'text-foreground placeholder:text-muted-foreground',
             'transition-all duration-200',
-            'focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500',
+            'focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent',
             error
-              ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500'
-              : 'border-gray-200 hover:border-gray-300',
-            props.disabled && 'bg-gray-50 cursor-not-allowed opacity-60',
+              ? 'border-destructive focus:ring-destructive/30'
+              : 'border-border hover:border-accent',
+            props.disabled && 'bg-muted cursor-not-allowed opacity-60',
             className
           )}
           {...props}
@@ -48,7 +48,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <p
             className={cn(
               'mt-1 text-sm',
-              error ? 'text-error' : 'text-gray-500'
+              error ? 'text-destructive' : 'text-muted-foreground'
             )}
           >
             {error || helperText}

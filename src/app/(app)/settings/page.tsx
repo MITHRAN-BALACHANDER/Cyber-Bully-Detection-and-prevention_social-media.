@@ -109,12 +109,12 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-2 text-lg">Manage your account settings and preferences</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Settings</h1>
+          <p className="text-muted-foreground mt-2 text-lg">Manage your account settings and preferences</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -129,8 +129,8 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab(tab.value)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
                       activeTab === tab.value
-                        ? 'bg-primary-600 text-white shadow-md'
-                        : 'text-gray-600 hover:bg-gray-100'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -145,12 +145,12 @@ export default function SettingsPage() {
           <div className="lg:col-span-3">
             {activeTab === 'profile' && (
               <Card className="p-6 sm:p-8 shadow-md">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-6">Profile Information</h2>
 
                 {message && (
                   <div className={`mb-6 p-4 rounded-xl font-medium ${
                     message.includes('success') 
-                      ? 'bg-green-50 text-green-700 border border-green-200' 
+                      ? 'bg-green-50 text-muted-foreground border border-green-200' 
                       : 'bg-red-50 text-red-700 border border-red-200'
                   }`}>
                     {message}
@@ -159,7 +159,7 @@ export default function SettingsPage() {
 
                 {/* Avatar */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Profile Photo
                   </label>
                   <div className="flex items-center gap-4">
@@ -193,7 +193,7 @@ export default function SettingsPage() {
                   />
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Bio
                     </label>
                     <textarea
@@ -201,7 +201,7 @@ export default function SettingsPage() {
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       placeholder="Tell us about yourself..."
                       rows={4}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                     />
                   </div>
 
@@ -244,7 +244,7 @@ export default function SettingsPage() {
                 <Card className="p-6 sm:p-8 shadow-md">
                   <div className="flex items-center gap-3 mb-6">
                     <Flame className="w-7 h-7 text-orange-500" />
-                    <h2 className="text-2xl font-bold text-gray-900">Your Streak</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Your Streak</h2>
                   </div>
 
                   {streakData ? (
@@ -256,8 +256,8 @@ export default function SettingsPage() {
                           <div className="text-5xl font-bold text-orange-600 mb-2">
                             {streakData.streak?.currentStreak || 0}
                           </div>
-                          <div className="text-gray-700 font-medium">Day Current Streak</div>
-                          <p className="text-sm text-gray-600 mt-2">
+                          <div className="text-foreground font-medium">Day Current Streak</div>
+                          <p className="text-sm text-muted-foreground mt-2">
                             Keep posting positive content daily!
                           </p>
                         </div>
@@ -270,15 +270,15 @@ export default function SettingsPage() {
                           <div className="text-5xl font-bold text-purple-600 mb-2">
                             {streakData.streak?.longestStreak || 0}
                           </div>
-                          <div className="text-gray-700 font-medium">Day Longest Streak</div>
-                          <p className="text-sm text-gray-600 mt-2">
+                          <div className="text-foreground font-medium">Day Longest Streak</div>
+                          <p className="text-sm text-muted-foreground mt-2">
                             Your personal best record
                           </p>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">Loading streak data...</div>
+                    <div className="text-center py-8 text-muted-foreground">Loading streak data...</div>
                   )}
 
                   <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
@@ -305,7 +305,7 @@ export default function SettingsPage() {
                 <Card className="p-6 sm:p-8 shadow-md">
                   <div className="flex items-center gap-3 mb-6">
                     <AlertTriangle className="w-7 h-7 text-yellow-600" />
-                    <h2 className="text-2xl font-bold text-gray-900">Content Safety</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Content Safety</h2>
                   </div>
 
                   {streakData ? (
@@ -329,17 +329,17 @@ export default function SettingsPage() {
                             }`}>
                               {streakData.violations?.dailyCount || 0}/3
                             </div>
-                            <div className="text-gray-700 font-medium">Today's Violations</div>
+                            <div className="text-foreground font-medium">Today's Violations</div>
                           </div>
                         </div>
 
                         {/* Total Violations */}
-                        <div className="bg-gray-50 p-6 rounded-2xl border-2 border-gray-200">
+                        <div className="bg-background p-6 rounded-2xl border-2 border-border">
                           <div className="text-center">
-                            <div className="text-4xl font-bold text-gray-700 mb-2">
+                            <div className="text-4xl font-bold text-foreground mb-2">
                               {streakData.violations?.totalCount || 0}
                             </div>
-                            <div className="text-gray-700 font-medium">Total Violations</div>
+                            <div className="text-foreground font-medium">Total Violations</div>
                           </div>
                         </div>
                       </div>
@@ -391,7 +391,7 @@ export default function SettingsPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">Loading safety data...</div>
+                    <div className="text-center py-8 text-muted-foreground">Loading safety data...</div>
                   )}
                 </Card>
               </div>
@@ -399,17 +399,17 @@ export default function SettingsPage() {
 
             {activeTab === 'privacy' && (
               <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Privacy Settings</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">Privacy Settings</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">Profile Visibility</h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h3 className="font-medium text-foreground">Profile Visibility</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Control who can see your profile
                       </p>
                     </div>
-                    <select className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <select className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                       <option value="public">Public</option>
                       <option value="connections">Connections Only</option>
                       <option value="private">Private</option>
@@ -418,14 +418,14 @@ export default function SettingsPage() {
 
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">Show Last Seen</h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h3 className="font-medium text-foreground">Show Last Seen</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Let others see when you were last active
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
                 </div>
@@ -434,58 +434,58 @@ export default function SettingsPage() {
 
             {activeTab === 'notifications' && (
               <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Notification Preferences</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">Notification Preferences</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">Post Likes</h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h3 className="font-medium text-foreground">Post Likes</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Get notified when someone likes your post
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
 
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">Comments</h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h3 className="font-medium text-foreground">Comments</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Get notified when someone comments on your post
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
 
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">New Messages</h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h3 className="font-medium text-foreground">New Messages</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Get notified when you receive a new message
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
 
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">Connection Requests</h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h3 className="font-medium text-foreground">Connection Requests</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Get notified when someone wants to connect
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
                 </div>
@@ -494,21 +494,21 @@ export default function SettingsPage() {
 
             {activeTab === 'account' && (
               <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Account Settings</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">Account Settings</h2>
                 
                 <div className="space-y-6">
                   <div>
-                    <h3 className="font-medium text-gray-900 mb-2">Email</h3>
-                    <p className="text-sm text-gray-600">{user?.email}</p>
+                    <h3 className="font-medium text-foreground mb-2">Email</h3>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
 
                   <div>
-                    <h3 className="font-medium text-gray-900 mb-2">Username</h3>
-                    <p className="text-sm text-gray-600">@{user?.username}</p>
+                    <h3 className="font-medium text-foreground mb-2">Username</h3>
+                    <p className="text-sm text-muted-foreground">@{user?.username}</p>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200">
-                    <h3 className="font-medium text-gray-900 mb-4">Danger Zone</h3>
+                  <div className="pt-6 border-t border-border">
+                    <h3 className="font-medium text-foreground mb-4">Danger Zone</h3>
                     
                     <Button
                       variant="danger"

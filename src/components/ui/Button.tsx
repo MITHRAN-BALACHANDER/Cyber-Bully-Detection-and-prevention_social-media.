@@ -15,11 +15,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses = {
-  primary: 'bg-primary-600 text-white hover:bg-primary-700 active:scale-[0.98] shadow-sm hover:shadow-md',
-  secondary: 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 shadow-sm',
-  outline: 'border-2 border-gray-200 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50',
-  ghost: 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-  danger: 'bg-red-600 text-white hover:bg-red-700 active:scale-[0.98] shadow-sm hover:shadow-md',
+  primary:
+    'text-primary-foreground bg-gradient-to-br from-primary via-secondary to-accent shadow-[var(--shadow-soft)] hover:brightness-110 active:scale-[0.98]',
+  secondary:
+    'bg-card/70 text-card-foreground border border-border backdrop-blur-xl hover:bg-card/80 shadow-[0_0_0_1px_var(--border)_inset]',
+  outline:
+    'bg-transparent text-foreground border border-border hover:bg-white/5 shadow-[0_0_0_1px_var(--border)_inset]',
+  ghost:
+    'bg-transparent text-muted-foreground hover:text-foreground hover:bg-white/5',
+  danger:
+    'bg-danger text-white hover:brightness-110 active:scale-[0.98] shadow-[var(--shadow-soft)]',
 };
 
 const sizeClasses = {
@@ -46,9 +51,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          'inline-flex items-center justify-center font-semibold rounded-xl',
+          'inline-flex items-center justify-center font-semibold rounded-2xl',
           'transition-all duration-200 ease-out',
-          'focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:ring-offset-2',
+          'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
           'disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none',
           variantClasses[variant],
           sizeClasses[size],

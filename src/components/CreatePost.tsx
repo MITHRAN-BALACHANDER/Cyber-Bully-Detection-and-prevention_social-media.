@@ -133,10 +133,10 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
       <div className="flex items-center gap-3 mb-4">
         <Avatar src={user.avatar} name={user.name} size="md" />
         <div className="flex-1 relative">
-          <p className="font-semibold text-gray-900">{user.name}</p>
+          <p className="font-semibold text-foreground">{user.name}</p>
           <button
             onClick={() => setShowVisibilityMenu(!showVisibilityMenu)}
-            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors mt-0.5"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-muted-foreground transition-colors mt-0.5"
           >
             <VisibilityIcon className="w-3.5 h-3.5" />
             <span>{visibilityOptions.find((v) => v.value === visibility)?.label}</span>
@@ -144,7 +144,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
           
           {/* Visibility Menu */}
           {showVisibilityMenu && (
-            <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 min-w-[160px] overflow-hidden">
+            <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-xl shadow-xl z-20 min-w-[160px] overflow-hidden">
               {visibilityOptions.map((option) => {
                 const Icon = option.icon;
                 return (
@@ -155,7 +155,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
                       setShowVisibilityMenu(false);
                     }}
                     className={cn(
-                      'flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50 transition-colors',
+                      'flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-muted transition-colors',
                       visibility === option.value && 'bg-primary-50 text-primary-600'
                     )}
                   >
@@ -220,7 +220,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
       {mediaUrls.length > 0 && (
         <div className="grid grid-cols-2 gap-2 mt-4">
           {mediaUrls.map((url, index) => (
-            <div key={index} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
+            <div key={index} className="relative aspect-video bg-muted rounded-lg overflow-hidden">
               {mediaTypes[index] === 'video' ? (
                 <video src={url} className="w-full h-full object-cover" controls />
               ) : (
@@ -247,7 +247,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
         className="hidden"
       />
       
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
         <div className="flex gap-1">
           <button
             type="button"
@@ -257,7 +257,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
                 fileInputRef.current.click();
               }
             }}
-            className="p-2.5 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200"
+            className="p-2.5 text-muted-foreground hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200"
             title="Add photo"
           >
             <ImageIcon className="w-5 h-5" />
@@ -270,7 +270,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
                 fileInputRef.current.click();
               }
             }}
-            className="p-2.5 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200"
+            className="p-2.5 text-muted-foreground hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200"
             title="Add video"
           >
             <Video className="w-5 h-5" />

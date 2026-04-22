@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Chrome, Github } from 'lucide-react';
 import { useAuth } from '@/hooks';
 import { Button, Input, Card } from '@/components/ui';
 
@@ -31,27 +33,56 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="text-center mb-10">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="text-center mb-8"
+      >
         <Link href="/" className="inline-flex items-center gap-3 group">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200">
-            <span className="text-white font-bold text-2xl">S</span>
+          <div className="relative w-12 h-12 rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary via-secondary to-accent" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.35),transparent_60%)]" />
+            <div className="relative h-full w-full grid place-items-center text-primary-foreground font-semibold text-2xl">
+              S
+            </div>
           </div>
-          <span className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
-            swirl
+          <span className="text-2xl font-semibold tracking-tight text-foreground">
+            SocialHub
           </span>
         </Link>
-        <h2 className="mt-8 text-3xl font-bold text-gray-900">
+        <h2 className="mt-6 text-3xl font-semibold tracking-tight text-foreground">
           Welcome back
         </h2>
-        <p className="mt-3 text-gray-600 text-lg">
-          Sign in to continue your journey
+        <p className="mt-2 text-muted-foreground">
+          Sign in to your account.
         </p>
-      </div>
+        <div className="mt-4 text-xs text-muted-foreground">
+          Trusted by builders, creators, and teams.
+        </div>
+      </motion.div>
 
-      <Card className="shadow-xl">
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <Card className="p-6 sm:p-7">
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="secondary" type="button" className="justify-center">
+            <Chrome className="mr-2 h-4 w-4" />
+            Google
+          </Button>
+          <Button variant="secondary" type="button" className="justify-center">
+            <Github className="mr-2 h-4 w-4" />
+            GitHub
+          </Button>
+        </div>
+
+        <div className="my-5 flex items-center gap-3">
+          <div className="h-px flex-1 bg-white/5" />
+          <div className="text-xs text-muted-foreground">or</div>
+          <div className="h-px flex-1 bg-white/5" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
+            <div className="p-4 bg-destructive/10 border border-border rounded-2xl text-destructive text-sm font-medium">
               {error}
             </div>
           )}
@@ -80,13 +111,13 @@ export default function LoginPage() {
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                className="w-4 h-4 rounded border-border bg-transparent text-primary focus:ring-ring"
               />
-              <span className="text-sm text-gray-600">Remember me</span>
+              <span className="text-sm text-muted-foreground">Remember me</span>
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-primary-600 hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               Forgot password?
             </Link>
@@ -102,9 +133,9 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-primary-600 font-medium hover:underline">
+            <Link href="/register" className="text-primary font-semibold hover:underline">
               Sign up
             </Link>
           </p>

@@ -182,13 +182,13 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
             src={author.avatar}
             name={author.name}
             size="md"
-            className="group-hover:ring-4 ring-primary-200 transition-all"
+            className="group-hover:ring-4 ring-primary/25 transition-all"
           />
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors truncate">
+            <p className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
               {author.name}
             </p>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               {author.headline && (
                 <>
                   <span className="truncate max-w-[180px]">{author.headline}</span>
@@ -203,13 +203,13 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
         <div className="relative" ref={menuRef}>
           <button 
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 flex-shrink-0"
+            className="p-2 hover:bg-white/5 rounded-2xl transition-all duration-200 flex-shrink-0"
           >
-            <MoreHorizontal className="w-5 h-5 text-gray-500" />
+            <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
           </button>
           
           {showMenu && (
-            <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-xl z-20 min-w-[160px] overflow-hidden">
+            <div className="absolute right-0 top-10 bg-card/90 backdrop-blur-xl border border-border rounded-2xl shadow-[var(--shadow-soft)] z-20 min-w-[180px] overflow-hidden">
               {isAuthor && (
                 <>
                   <button
@@ -217,7 +217,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
                       setIsEditing(true);
                       setShowMenu(false);
                     }}
-                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-white/5 transition-colors"
                   >
                     <Edit2 className="w-4 h-4" />
                     <span className="font-medium">Edit post</span>
@@ -227,12 +227,12 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
                       handleDelete();
                       setShowMenu(false);
                     }}
-                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left text-red-600 hover:bg-red-50 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left text-danger hover:bg-danger/10 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                     <span className="font-medium">Delete post</span>
                   </button>
-                  <div className="border-t border-gray-100" />
+                  <div className="border-t border-white/5" />
                 </>
               )}
               <button
@@ -241,7 +241,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
                   setShowMenu(false);
                   alert('Link copied to clipboard!');
                 }}
-                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-white/5 transition-colors"
               >
                 <Share2 className="w-4 h-4" />
                 <span className="font-medium">Copy link</span>
@@ -297,12 +297,12 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
         <>
           {/* Article Title */}
           {post.type === 'article' && post.title && (
-            <h2 className="text-xl font-bold text-gray-900 mb-2">{post.title}</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{post.title}</h2>
           )}
 
           {/* Content */}
           <div className="mb-4">
-            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+            <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">{post.content}</p>
           </div>
         </>
       )}
@@ -348,7 +348,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
 
       {/* Stats */}
       {(likeCount > 0 || commentCount > 0 || post.repostCount > 0) && (
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-3 pb-3 border-b border-gray-100">
+        <div className="flex items-center justify-between text-sm text-muted-foreground mb-3 pb-3 border-b border-white/5">
           <div className="flex items-center gap-1">
             {likeCount > 0 && (
               <span className="font-medium">
@@ -360,7 +360,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
             {commentCount > 0 && (
               <button
                 onClick={() => setShowComments(!showComments)}
-                className="hover:underline font-medium hover:text-gray-700 transition-colors"
+                className="hover:underline font-medium hover:text-foreground transition-colors"
               >
                 {formatCount(commentCount)} {commentCount === 1 ? 'comment' : 'comments'}
               </button>
@@ -373,15 +373,15 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-1 border-t border-gray-100 pt-2">
+      <div className="flex items-center gap-1 border-t border-white/5 pt-2">
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={handleLike}
           className={cn(
-            'flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 flex-1 justify-center',
+            'flex items-center gap-2 px-4 py-2.5 rounded-2xl transition-all duration-200 flex-1 justify-center',
             isLiked
-              ? 'text-red-600 bg-red-50 hover:bg-red-100'
-              : 'text-gray-600 hover:bg-gray-100'
+              ? 'text-danger bg-danger/10 hover:bg-danger/15'
+              : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
           )}
         >
           <Heart
@@ -395,7 +395,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
             setShowComments(!showComments);
             onComment?.(post._id);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 transition-all duration-200 flex-1 justify-center"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all duration-200 flex-1 justify-center"
         >
           <MessageCircle className="w-5 h-5" />
           <span className="text-sm font-semibold">Comment</span>
@@ -419,7 +419,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
             }
             onShare?.(post._id);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 transition-all duration-200 flex-1 justify-center"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all duration-200 flex-1 justify-center"
         >
           <Share2 className="w-5 h-5" />
           <span className="text-sm font-semibold">Share</span>
@@ -431,7 +431,7 @@ export function PostCard({ post, onLike, onComment, onShare, onAddComment, onEdi
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="border-t border-surface-border"
+          className="border-t border-white/5"
         >
           <CommentSection
             postId={post._id}

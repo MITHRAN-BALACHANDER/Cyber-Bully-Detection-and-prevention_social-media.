@@ -6,6 +6,13 @@
 // UI Components
 export * from './ui';
 
+// Providers
+export * from './providers/AppProviders';
+export * from './providers/ThemeProvider';
+
+// Shell
+export * from './shell/AppShell';
+
 // Main Components
 export { PostCard } from './PostCard';
 export { MediaGrid } from './MediaGrid';

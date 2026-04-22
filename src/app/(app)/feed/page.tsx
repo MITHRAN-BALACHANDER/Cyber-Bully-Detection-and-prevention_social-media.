@@ -169,22 +169,27 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      {/* Create Post */}
-      <CreatePost onSuccess={handlePostCreated} />
+    <div className="mx-auto w-full max-w-[720px]">
+      {/* Composer (sticky) */}
+      <div className="sticky top-4 z-20">
+        <div className="glass rounded-3xl p-3 sm:p-4">
+          <CreatePost onSuccess={handlePostCreated} />
+        </div>
+        <div className="h-4" />
+      </div>
 
       {/* Filter Tabs */}
-      <Card className="mb-6 p-2">
+      <Card className="mb-5 p-2">
         <div className="flex gap-2">
           {(['all', 'posts', 'media'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={cn(
-                'px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex-1',
+                'px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 flex-1',
                 filter === f
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-white/6 text-foreground shadow-[0_0_0_1px_var(--border)_inset]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
               )}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -233,7 +238,7 @@ export default function FeedPage() {
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center py-8">
-            <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         )}
 
@@ -241,7 +246,7 @@ export default function FeedPage() {
         {!isLoading && hasMore && (
           <button
             onClick={handleLoadMore}
-            className="w-full py-3 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+            className="w-full py-3 text-primary hover:bg-white/5 rounded-2xl transition-colors"
           >
             Load more
           </button>
@@ -250,13 +255,13 @@ export default function FeedPage() {
         {/* Empty State */}
         {!isLoading && items.length === 0 && (
           <Card className="text-center py-12">
-            <p className="text-gray-500">No posts yet. Be the first to share something!</p>
+            <p className="text-muted-foreground">No posts yet. Be the first to share something!</p>
           </Card>
         )}
 
         {/* End of Feed */}
         {!isLoading && items.length > 0 && !hasMore && (
-          <p className="text-center text-gray-500 py-8">
+          <p className="text-center text-muted-foreground py-8">
             You&apos;ve reached the end of your feed
           </p>
         )}
