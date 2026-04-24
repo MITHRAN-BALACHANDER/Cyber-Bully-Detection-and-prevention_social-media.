@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useChatStore } from '@/store';
 import { CREATE_ITEM, PRIMARY_NAV } from './nav';
+import { ThemeToggle } from '@/components/ui';
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -70,6 +71,11 @@ export function MobileNav() {
       >
         <CREATE_ITEM.icon className="mx-auto h-6 w-6 text-primary-foreground" />
       </button>
+
+      {/* Floating Theme Toggle */}
+      <div className="lg:hidden fixed bottom-20 left-4 z-50">
+        <ThemeToggle className="shadow-[var(--shadow-glass)] bg-white/20 dark:bg-black/20 backdrop-blur-md" />
+      </div>
     </>
   );
 }

@@ -176,10 +176,10 @@ export default function NetworkPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Network</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">My Network</h1>
 
       {/* Tabs */}
-      <div className="flex border-b border-surface-border mb-6">
+      <div className="flex border-b border-border mb-6">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -188,8 +188,8 @@ export default function NetworkPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
                 activeTab === tab.id
-                  ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -197,8 +197,8 @@ export default function NetworkPage() {
               {tab.count > 0 && (
                 <span className={`px-2 py-0.5 text-xs rounded-full ${
                   activeTab === tab.id
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'bg-gray-100 text-gray-600'
+                    ? 'bg-primary/20 text-primary'
+                    : 'bg-accent text-accent-foreground'
                 }`}>
                   {tab.count}
                 </span>
@@ -211,7 +211,7 @@ export default function NetworkPage() {
       {/* Content */}
       {isLoading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
@@ -239,9 +239,9 @@ export default function NetworkPage() {
                 })
               ) : (
                 <Card className="md:col-span-2 text-center py-12">
-                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No connections yet</p>
-                  <p className="text-sm text-gray-400 mt-1">
+                  <Users className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+                  <p className="text-muted-foreground">No connections yet</p>
+                  <p className="text-sm text-muted-foreground/70 mt-1">
                     Start connecting with people to grow your network
                   </p>
                 </Card>
@@ -274,8 +274,8 @@ export default function NetworkPage() {
                 })
               ) : (
                 <Card className="md:col-span-2 text-center py-12">
-                  <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No pending requests</p>
+                  <Clock className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+                  <p className="text-muted-foreground">No pending requests</p>
                 </Card>
               )}
             </>
@@ -300,8 +300,8 @@ export default function NetworkPage() {
                 ))
               ) : (
                 <Card className="md:col-span-2 text-center py-12">
-                  <UserPlus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No suggestions available</p>
+                  <UserPlus className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+                  <p className="text-muted-foreground">No suggestions available</p>
                 </Card>
               )}
             </>

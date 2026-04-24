@@ -156,7 +156,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
                     }}
                     className={cn(
                       'flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-muted transition-colors',
-                      visibility === option.value && 'bg-primary-50 text-primary-600'
+                      visibility === option.value && 'bg-primary/20 text-primary'
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -178,10 +178,10 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
             exit={{ opacity: 0, y: -10 }}
             className={`flex items-start gap-3 p-4 rounded-xl border-2 ${
               error.includes('locked') 
-                ? 'bg-red-50 border-red-300 text-red-900'
+                ? 'bg-destructive/10 border-destructive text-destructive'
                 : error.includes('violation')
-                ? 'bg-yellow-50 border-yellow-300 text-yellow-900'
-                : 'bg-red-50 border-red-300 text-red-900'
+                ? 'bg-yellow-500/10 border-yellow-500/50 text-yellow-600 dark:text-yellow-400'
+                : 'bg-destructive/10 border-destructive/50 text-destructive'
             }`}
           >
             {error.includes('locked') ? (
@@ -257,7 +257,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
                 fileInputRef.current.click();
               }
             }}
-            className="p-2.5 text-muted-foreground hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200"
+            className="p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all duration-200"
             title="Add photo"
           >
             <ImageIcon className="w-5 h-5" />
@@ -270,7 +270,7 @@ export function CreatePost({ onSuccess }: CreatePostProps) {
                 fileInputRef.current.click();
               }
             }}
-            className="p-2.5 text-muted-foreground hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200"
+            className="p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all duration-200"
             title="Add video"
           >
             <Video className="w-5 h-5" />

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Command } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Avatar, Button } from '@/components/ui';
+import { Avatar, Button, ThemeToggle } from '@/components/ui';
 import { useAuthStore, useChatStore } from '@/store';
 import { CREATE_ITEM, PRIMARY_NAV, SECONDARY_NAV } from './nav';
 
@@ -111,7 +111,14 @@ export function LeftSidebar({ onOpenCommand }: { onOpenCommand: () => void }) {
         </div>
       </nav>
 
-      <div className="glass rounded-3xl p-4">
+      <div className="glass rounded-3xl p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-muted-foreground px-1">Theme</span>
+          <ThemeToggle />
+        </div>
+        
+        <div className="h-px bg-white/5" />
+
         <div className="flex items-center gap-3">
           <Avatar src={user?.avatar} name={user?.name || 'You'} size="md" />
           <div className="min-w-0">

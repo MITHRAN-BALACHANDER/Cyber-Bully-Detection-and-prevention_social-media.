@@ -39,10 +39,10 @@ export function Avatar({ src, name, size = 'md', className, onClick }: AvatarPro
     <div
       className={cn(
         'relative rounded-full overflow-hidden flex-shrink-0',
-        'flex items-center justify-center ring-2 ring-gray-100',
-        'bg-gradient-to-br from-primary-500 to-primary-600 text-white font-semibold',
+        'flex items-center justify-center ring-2 ring-border/50',
+        'bg-primary text-primary-foreground font-semibold',
         sizeClasses[size],
-        onClick && 'cursor-pointer hover:ring-4 hover:ring-primary-200 transition-all duration-200',
+        onClick && 'cursor-pointer hover:ring-4 hover:ring-primary/20 transition-all duration-200',
         className
       )}
       onClick={onClick}

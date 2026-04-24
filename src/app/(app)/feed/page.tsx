@@ -170,8 +170,8 @@ export default function FeedPage() {
 
   return (
     <div className="mx-auto w-full max-w-[720px]">
-      {/* Composer (sticky) */}
-      <div className="sticky top-4 z-20">
+      {/* Composer */}
+      <div className="relative z-20">
         <div className="glass rounded-3xl p-3 sm:p-4">
           <CreatePost onSuccess={handlePostCreated} />
         </div>

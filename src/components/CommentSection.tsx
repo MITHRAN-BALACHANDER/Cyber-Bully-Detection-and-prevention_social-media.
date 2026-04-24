@@ -114,7 +114,7 @@ export default function CommentSection({ postId: _postId, comments: initialComme
               className="rounded-full"
             />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">
+            <div className="w-8 h-8 rounded-full bg-accent/50 flex items-center justify-center text-sm font-medium text-foreground">
               {user?.name?.[0]?.toUpperCase()}
             </div>
           )}
@@ -125,13 +125,13 @@ export default function CommentSection({ postId: _postId, comments: initialComme
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write a comment..."
-            className="flex-1 px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-3 py-2 bg-accent/20 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
             disabled={isSubmitting}
           />
           <button
             type="submit"
             disabled={!content.trim() || isSubmitting}
-            className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {isSubmitting ? 'Posting...' : 'Post'}
           </button>
@@ -159,19 +159,19 @@ export default function CommentSection({ postId: _postId, comments: initialComme
                     className="rounded-full"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">
+                  <div className="w-8 h-8 rounded-full bg-accent/50 flex items-center justify-center text-sm font-medium text-foreground">
                     {author?.name?.[0]?.toUpperCase() || 'U'}
                   </div>
                 )}
               </div>
               <div className="flex-1">
-                <div className="bg-gray-100 rounded-2xl px-3 py-2">
-                  <p className="font-medium text-sm">{author?.name || 'Unknown User'}</p>
-                  <p className="text-sm">{comment.content}</p>
+                <div className="bg-accent/30 rounded-2xl px-3 py-2">
+                  <p className="font-medium text-sm text-foreground">{author?.name || 'Unknown User'}</p>
+                  <p className="text-sm text-foreground/90">{comment.content}</p>
                 </div>
-                <div className="flex gap-3 px-3 mt-1 text-xs text-gray-500">
-                  <button className="hover:underline">Like</button>
-                  <button className="hover:underline">Reply</button>
+                <div className="flex gap-3 px-3 mt-1 text-xs text-muted-foreground">
+                  <button className="hover:text-foreground transition-colors">Like</button>
+                  <button className="hover:text-foreground transition-colors">Reply</button>
                   <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
@@ -179,7 +179,7 @@ export default function CommentSection({ postId: _postId, comments: initialComme
           );
         })}
         {localComments.length === 0 && (
-          <p className="text-center text-gray-500 text-sm py-4">
+          <p className="text-center text-muted-foreground text-sm py-4">
             No comments yet. Be the first to comment!
           </p>
         )}

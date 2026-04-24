@@ -184,9 +184,9 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+      <div className="flex items-center justify-between px-4 py-3 bg-card border-b border-border">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar
@@ -195,14 +195,14 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
               size="md"
             />
             {isOtherUserOnline && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
             )}
           </div>
           <div>
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-foreground">
               {otherUser?.name || groupName}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {isOtherUserOnline ? 'Online' : otherUser?.lastSeen ? `Last seen ${formatRelativeTime(otherUser.lastSeen)}` : ''}
             </p>
           </div>
@@ -210,31 +210,31 @@ export function ChatWindow({ conversationId, otherUser, groupName }: ChatWindowP
         <div className="relative" ref={menuRef}>
           <button 
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-accent rounded-full transition-colors"
           >
-            <MoreVertical className="w-5 h-5 text-gray-500" />
+            <MoreVertical className="w-5 h-5 text-muted-foreground" />
           </button>
           
           {showMenu && (
-            <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[180px]">
+            <div className="absolute right-0 top-10 bg-popover border border-border rounded-lg shadow-lg z-20 min-w-[180px] overflow-hidden">
               <button
                 onClick={handleBlock}
-                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-50 text-gray-700"
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-accent/50 text-foreground"
               >
                 <Ban className="w-4 h-4" />
                 Block {otherUser?.name?.split(' ')[0]}
               </button>
               <button
                 onClick={handleReport}
-                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-50 text-gray-700"
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-accent/50 text-foreground"
               >
                 <Flag className="w-4 h-4" />
                 Report
               </button>
-              <hr className="border-gray-200" />
+              <hr className="border-border" />
               <button
                 onClick={handleDeleteConversation}
-                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-50 text-red-600"
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-accent/50 text-destructive"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete conversation
