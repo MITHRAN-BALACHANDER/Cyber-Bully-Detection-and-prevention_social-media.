@@ -38,7 +38,7 @@ export function LeftSidebar({ onOpenCommand }: { onOpenCommand: () => void }) {
             </div>
           </div>
           <div className="leading-tight">
-            <div className="text-base font-semibold tracking-tight">SocialHub</div>
+            <div className="text-base font-semibold tracking-tight">Sentinel</div>
             <div className="text-xs text-muted-foreground">Unified social.</div>
           </div>
         </Link>

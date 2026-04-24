@@ -1,7 +1,7 @@
-# SocialHub Project Resume
+# Sentinel Project Resume
 
 ## Project name
-SocialHub - Unified Social Networking Platform.
+Sentinel - Unified Social Networking Platform.
 
 ## One-line project pitch
 A full-stack social platform that combines media sharing, microblogging, professional networking, and real-time chat in one app.
@@ -254,7 +254,7 @@ Resolution: Added fallback behavior for in-memory presence so chat remains usabl
 ## AI role addendum
 
 ## Project name (AI)
-SentinelAI moderation module integrated into SocialHub.
+SentinelAI moderation module integrated into Sentinel.
 
 ## One-line project pitch (AI)
 Built text and image toxicity classifiers for real-time safety enforcement using lightweight deployable ONNX inference.

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Auth | SocialHub',
-  description: 'Join SocialHub — creators, pros, and communities.',
+  title: 'Auth | Sentinel',
+  description: 'Join Sentinel — creators, pros, and communities.',
 };
 
 export default function AuthLayout({
@@ -29,7 +29,7 @@ export default function AuthLayout({
                 </div>
               </div>
               <div className="leading-tight">
-                <div className="text-lg font-semibold tracking-tight text-foreground">SocialHub</div>
+                <div className="text-lg font-semibold tracking-tight text-foreground">Sentinel</div>
                 <div className="text-sm text-muted-foreground">Unified social. Premium by default.</div>
               </div>
             </div>

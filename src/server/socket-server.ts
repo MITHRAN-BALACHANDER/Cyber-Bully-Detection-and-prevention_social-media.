@@ -13,7 +13,7 @@ import Redis from 'ioredis';
 // Environment variables
 const PORT = parseInt(process.env.SOCKET_PORT || '3001');
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-in-production';
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/social-platform';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sentinel';
 const REDIS_URL = process.env.REDIS_URL;
 
 // Redis client for presence (optional)

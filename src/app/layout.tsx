@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SocialHub',
+  title: 'Sentinel',
   description:
     'A unified modern social platform for creators, professionals, and communities.',
-  keywords: ['SocialHub', 'social', 'networking', 'chat', 'posts', 'media'],
+  keywords: ['Sentinel', 'social', 'networking', 'chat', 'posts', 'media'],
 };
 
 export default function RootLayout({

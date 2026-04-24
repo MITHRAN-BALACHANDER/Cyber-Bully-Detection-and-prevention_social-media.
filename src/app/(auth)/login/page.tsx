@@ -48,7 +48,7 @@ export default function LoginPage() {
             </div>
           </div>
           <span className="text-2xl font-semibold tracking-tight text-foreground">
-            SocialHub
+            Sentinel
           </span>
         </Link>
         <h2 className="mt-6 text-3xl font-semibold tracking-tight text-foreground">

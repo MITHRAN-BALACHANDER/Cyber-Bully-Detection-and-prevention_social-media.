@@ -7,7 +7,7 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import * as bcrypt from 'bcryptjs';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/social-platform';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sentinel';
 
 // Dummy users data with Tamil names
 const users = [

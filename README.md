@@ -1,4 +1,4 @@
-# SocialHub - Unified Social Networking Platform
+# Sentinel - Unified Social Networking Platform
 
 A modular social networking platform combining the best features of Instagram, Twitter, WhatsApp, and LinkedIn into one unified experience.
 
@@ -121,7 +121,7 @@ cp .env.example .env.local
 4. Configure your environment variables:
 ```env
 # Database
-MONGODB_URI=mongodb://localhost:27017/socialhub
+MONGODB_URI=mongodb://localhost:27017/sentinel
 
 # Redis
 REDIS_URL=redis://localhost:6379

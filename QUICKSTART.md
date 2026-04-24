@@ -30,7 +30,7 @@ Then edit `.env.local` with your configuration:
 
 ```env
 # Database
-MONGODB_URI=mongodb://localhost:27017/socialhub
+MONGODB_URI=mongodb://localhost:27017/sentinel
 
 # Redis
 REDIS_URL=redis://localhost:6379
