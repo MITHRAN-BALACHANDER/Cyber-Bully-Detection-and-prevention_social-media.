@@ -61,60 +61,68 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
         className="text-center mb-8"
       >
-        <Link href="/" className="inline-flex items-center gap-3 group">
-          <div className="relative w-12 h-12 rounded-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary via-secondary to-accent" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.35),transparent_60%)]" />
-            <div className="relative h-full w-full grid place-items-center text-primary-foreground font-semibold text-2xl">
+        <Link href="/" className="inline-flex flex-col items-center gap-4 group">
+          <div className="relative w-14 h-14 rounded-2xl overflow-hidden shadow-xl ring-1 ring-border/50 transition-transform group-hover:scale-105 bg-primary">
+            <div className="relative h-full w-full grid place-items-center text-primary-foreground font-semibold text-2xl shadow-inner">
               S
             </div>
           </div>
-          <span className="text-2xl font-semibold tracking-tight text-foreground">
+          <span className="text-2xl font-bold tracking-tight text-foreground">
             Sentinel
           </span>
         </Link>
-        <h2 className="mt-6 text-3xl font-semibold tracking-tight text-foreground">
+        <h2 className="mt-8 text-3xl font-semibold tracking-tight text-foreground">
           Create your account
         </h2>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-muted-foreground text-sm">
           Get your handle, build your presence.
         </p>
       </motion.div>
 
-      <Card className="p-6 sm:p-7">
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, delay: 0.1, ease: 'easeOut' }}
+      >
+        <Card className="p-8 backdrop-blur-sm bg-card/80 border-border/50 shadow-2xl rounded-3xl">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-4 bg-danger/10 border border-border rounded-2xl text-danger text-sm font-medium">
+            <div className="p-4 bg-danger/10 border border-danger/20 rounded-2xl text-danger text-sm font-medium flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
               {error}
             </div>
           )}
 
-          <Input
-            label="Full Name"
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="John Doe"
-            required
-            autoComplete="name"
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Full Name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="User"
+              required
+              autoComplete="name"
+              className="rounded-xl bg-background/50"
+            />
 
-          <Input
-            label="Username"
-            type="text"
-            value={formData.username}
-            onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') })}
-            placeholder="johndoe"
-            required
-            autoComplete="username"
-          />
+            <Input
+              label="Username"
+              type="text"
+              value={formData.username}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') })}
+              placeholder="user"
+              required
+              autoComplete="username"
+              className="rounded-xl bg-background/50"
+            />
+          </div>
 
           <Input
             label="Email"
@@ -124,6 +132,7 @@ export default function RegisterPage() {
             placeholder="you@example.com"
             required
             autoComplete="email"
+            className="rounded-xl bg-background/50"
           />
 
           <Input
@@ -135,31 +144,32 @@ export default function RegisterPage() {
             required
             autoComplete="new-password"
             helperText="At least 8 characters"
+            className="rounded-xl bg-background/50"
           />
 
-          <div className="rounded-2xl border border-border bg-white/5 p-3">
+          <div className="rounded-2xl border border-border/50 bg-background/30 p-4 backdrop-blur-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <ShieldCheck className="h-4 w-4" />
+                <ShieldCheck className="h-4 w-4 text-primary" />
                 Password strength
               </div>
               <div className="text-xs font-semibold text-foreground">
                 {score <= 1 ? 'Weak' : score <= 3 ? 'Good' : 'Strong'}
               </div>
             </div>
-            <div className="mt-2 grid grid-cols-5 gap-1">
+            <div className="mt-3 grid grid-cols-5 gap-1.5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
                   className={[
-                    'h-1.5 rounded-full',
+                    'h-1.5 rounded-full transition-all duration-300',
                     i < score
                       ? score <= 1
-                        ? 'bg-danger'
+                        ? 'bg-danger shadow-[0_0_8px_rgba(239,68,68,0.5)]'
                         : score <= 3
-                          ? 'bg-warning'
-                          : 'bg-success'
-                      : 'bg-white/10',
+                          ? 'bg-warning shadow-[0_0_8px_rgba(245,158,11,0.5)]'
+                          : 'bg-success shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                      : 'bg-black/5 dark:bg-white/10',
                   ].join(' ')}
                 />
               ))}
@@ -174,21 +184,22 @@ export default function RegisterPage() {
             placeholder="••••••••"
             required
             autoComplete="new-password"
+            className="rounded-xl bg-background/50"
           />
 
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-3 pt-2">
             <input
               type="checkbox"
               required
-              className="mt-1 w-4 h-4 rounded border-border bg-transparent text-primary focus:ring-ring"
+              className="mt-1 w-4 h-4 rounded border-border/80 bg-background text-primary focus:ring-ring focus:ring-offset-0 transition-colors cursor-pointer"
             />
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground leading-tight">
               I agree to the{' '}
-              <Link href="/terms" className="text-primary hover:underline">
+              <Link href="/terms" className="text-primary font-medium hover:text-primary/80 transition-colors">
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link href="/privacy" className="text-primary hover:underline">
+              <Link href="/privacy" className="text-primary font-medium hover:text-primary/80 transition-colors">
                 Privacy Policy
               </Link>
             </span>
@@ -196,22 +207,23 @@ export default function RegisterPage() {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full rounded-xl py-6 font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98]"
             isLoading={isLoading}
           >
             Create Account
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <p className="text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="text-primary font-semibold hover:underline">
+            <Link href="/login" className="text-primary font-semibold hover:text-primary/80 transition-colors">
               Sign in
             </Link>
           </p>
         </div>
       </Card>
+      </motion.div>
     </div>
   );
 }
