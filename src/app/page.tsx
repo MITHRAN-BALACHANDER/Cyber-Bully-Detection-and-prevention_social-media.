@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuthStore } from '@/store';
 import { MessageSquare, Share2, Users, ArrowRight, Zap, Shield, Sparkles, Layout } from 'lucide-react';
 import { Button } from '@/components/ui';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function HomePage() {
   const router = useRouter();
@@ -50,9 +51,10 @@ export default function HomePage() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent flex items-center justify-center text-primary-foreground font-bold text-xl shadow-lg group-hover:shadow-primary/25 transition-all duration-300">
               S
             </div>
-            <span className="text-2xl font-bold tracking-tight text-foreground">swirlHub</span>
+            <span className="text-2xl font-bold tracking-tight text-foreground">Sentinel</span>
           </Link>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Link
               href="/login"
               className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors hidden sm:block"

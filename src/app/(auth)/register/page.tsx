@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Chrome, Github, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/hooks';
 import { Button, Input, Card } from '@/components/ui';
 
@@ -89,23 +89,6 @@ export default function RegisterPage() {
       </motion.div>
 
       <Card className="p-6 sm:p-7">
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary" type="button" className="justify-center">
-            <Chrome className="mr-2 h-4 w-4" />
-            Google
-          </Button>
-          <Button variant="secondary" type="button" className="justify-center">
-            <Github className="mr-2 h-4 w-4" />
-            GitHub
-          </Button>
-        </div>
-
-        <div className="my-5 flex items-center gap-3">
-          <div className="h-px flex-1 bg-white/5" />
-          <div className="text-xs text-muted-foreground">or</div>
-          <div className="h-px flex-1 bg-white/5" />
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="p-4 bg-danger/10 border border-border rounded-2xl text-danger text-sm font-medium">

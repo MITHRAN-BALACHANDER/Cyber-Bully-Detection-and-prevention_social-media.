@@ -23,11 +23,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="absolute bottom-[-180px] left-[-180px] h-[520px] w-[520px] rounded-full bg-gradient-to-tr from-accent/15 via-primary/10 to-secondary/10 blur-3xl" />
         </div>
 
-        <div className="mx-auto w-full max-w-[1400px]">
-          <div className="flex">
+        <div className="mx-auto w-full max-w-[1440px]">
+          <div className="flex justify-center xl:gap-4 2xl:gap-8">
             <LeftSidebar onOpenCommand={() => setOpen(true)} />
 
-            <main className="flex-1 min-w-0 px-4 sm:px-6 py-4 lg:py-6">
+            <main className="flex-1 w-full max-w-[800px] min-w-0 px-4 sm:px-6 py-4 lg:py-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={pathname}
